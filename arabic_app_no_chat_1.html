@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>تعلم العربية — Apprendre l'arabe</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+.app{max-width:980px;margin:0 auto;padding:1rem}
+.header{text-align:center;padding:.6rem 0}
+.arabic-title{font-size:26px;color:#7F77DD;direction:rtl;letter-spacing:3px}
+.header h1{font-size:18px;font-weight:500;color:#1a1a1a;margin-top:3px}
+.level-bar{display:flex;gap:5px;margin-bottom:.9rem;overflow-x:auto;padding-bottom:2px}
+.lvl-btn{flex:1;min-width:88px;padding:8px 5px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;text-align:center;transition:all .15s;position:relative}
+.lvl-btn .li{font-size:15px;display:block}
+.lvl-btn .ln{font-size:11px;font-weight:500;color:#666;margin-top:2px}
+.lvl-btn .ll{font-size:10px;color:#999}
+.lvl-btn.active{border-color:#7F77DD;background:#EEEDFE}
+.lvl-btn.active .ln{color:#534AB7}
+.lvl-btn.locked{opacity:.4;cursor:not-allowed}
+.lico{position:absolute;top:4px;right:5px;font-size:10px}
+.bn{position:absolute;bottom:3px;right:3px;font-size:9px;background:#FAC775;color:#633806;border-radius:5px;padding:1px 4px}
+.lhdr{background:#fff;border-radius:12px;border:1px solid #eee;padding:.85rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.85rem;flex-wrap:wrap}
+.lbadge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.linfo h2{font-size:14px;font-weight:500}
+.linfo p{font-size:12px;color:#666;margin-top:1px}
+.lprog{margin-left:auto;text-align:right}
+.lprog .pct{font-size:17px;font-weight:500;color:#7F77DD}
+.lprog .pctlbl{font-size:10px;color:#999}
+.pbsm{height:4px;background:#eee;border-radius:2px;margin-top:3px;overflow:hidden;min-width:90px}
+.pfsm{height:100%;background:#7F77DD;transition:width .3s}
+.nav{display:flex;gap:4px;margin-bottom:.85rem;flex-wrap:wrap}
+.nav-btn{padding:6px 12px;border-radius:16px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;color:#666}
+.nav-btn.active{background:#7F77DD;border-color:#7F77DD;color:white}
+.section{display:none}.section.active{display:block}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px;margin-bottom:.85rem}
+.lcard{background:#fff;border:1px solid #eee;border-radius:12px;padding:9px 5px;text-align:center;cursor:pointer;transition:all .15s}
+.lcard:hover,.lcard.sel{border-color:#AFA9EC;background:#EEEDFE}
+.lar{font-size:27px;direction:rtl;line-height:1.2}
+.lnm{font-size:10px;color:#999;margin-top:2px}
+.ldet{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.85rem}
+.fbadge{background:#EEEDFE;color:#534AB7;border-radius:8px;padding:3px 8px;font-size:15px;direction:rtl}
+.fcwrap{perspective:800px;margin:0 auto .85rem;max-width:370px;height:185px;cursor:pointer}
+.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;border-radius:12px}
+.fc.flipped{transform:rotateY(180deg)}
+.cface{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid #eee;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem}
+.cfront{background:#fff}
+.cback{background:#EEEDFE;transform:rotateY(180deg)}
+.cword{font-size:31px;direction:rtl;margin-bottom:5px}
+.chint{font-size:11px;color:#999}
+.ctrans{font-size:18px;font-weight:500;color:#534AB7}
+.fcc{display:flex;gap:6px;justify-content:center;margin-bottom:.85rem;flex-wrap:wrap}
+.fcc button{padding:6px 15px;border-radius:16px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;color:#666}
+.bknown{background:#EAF3DE!important;border-color:#639922!important;color:#3B6D11!important}
+.bunknown{background:#FCEBEB!important;border-color:#E24B4A!important;color:#A32D2D!important}
+.pb{height:4px;background:#eee;border-radius:2px;margin-bottom:.4rem;overflow:hidden}
+.pf{height:100%;background:#7F77DD;transition:width .3s}
+.mod-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.85rem}
+.mtab{padding:5px 11px;border-radius:13px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;color:#666}
+.mtab.active{background:#534AB7;border-color:#534AB7;color:white}
+.mtab.active.morpho{background:#D85A30;border-color:#D85A30}
+.lesson-box{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.85rem}
+.lesson-box h3{font-size:14px;font-weight:500;margin-bottom:.55rem}
+.rule-box{background:#EEEDFE;border-radius:8px;padding:.65rem .9rem;margin-bottom:.65rem;font-size:13px;color:#3C3489;border-left:3px solid #7F77DD;line-height:1.6}
+.rule-box.morpho-rule{background:#FAECE7;color:#4A1B0C;border-left-color:#D85A30}
+.ex-row{display:flex;align-items:center;gap:.65rem;padding:.35rem 0;border-bottom:1px solid #f0f0f0;flex-wrap:wrap}
+.ex-row:last-child{border-bottom:none}
+.ex-ar{font-size:19px;direction:rtl;min-width:95px}
+.ex-tr{font-size:12px;color:#7F77DD;min-width:75px}
+.ex-fr{font-size:13px;color:#666}
+.g-ex{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.65rem}
+.g-ex h4{font-size:13px;font-weight:500;margin-bottom:.65rem}
+.g-q{font-size:15px;margin-bottom:.65rem;line-height:1.5}
+.g-opts{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.4rem}
+.g-opt{padding:5px 13px;border-radius:13px;border:1px solid #ddd;background:#f5f5f0;cursor:pointer;font-size:14px;direction:rtl;transition:all .15s}
+.g-opt:hover:not(:disabled){background:#EEEDFE;border-color:#AFA9EC}
+.g-opt.correct{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+.g-opt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.g-fb{font-size:12px;margin-top:.35rem;min-height:15px;color:#666}
+.gscore-row{display:flex;gap:7px;align-items:center;margin-bottom:.65rem}
+.gsbadge{border-radius:11px;padding:3px 11px;font-size:12px;font-weight:500}
+.gsbadge.gram{background:#EEEDFE;color:#534AB7}
+.gsbadge.morph{background:#FAECE7;color:#993C1D}
+.next-btn{padding:5px 14px;border-radius:14px;border:1px solid #7F77DD;background:white;color:#534AB7;font-size:12px;cursor:pointer}
+.root-display{text-align:center;margin-bottom:1rem}
+.root-letters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.root-letter{width:52px;height:52px;border-radius:12px;border:2px solid #D85A30;background:#FAECE7;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.root-letter .rl-ar{font-size:24px;color:#993C1D;direction:rtl}
+.root-letter .rl-num{font-size:10px;color:#BA7517}
+.wazn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin:10px 0}
+.wazn-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:.65rem .85rem;cursor:pointer;transition:all .15s}
+.wazn-card:hover,.wazn-card.wsel{border-color:#F0997B;background:#FAECE7}
+.wazn-card .wpattern{font-size:18px;direction:rtl;color:#993C1D;font-weight:500}
+.wazn-card .wlabel{font-size:11px;color:#999;margin-top:2px}
+.wazn-card .wexample{font-size:14px;direction:rtl;margin-top:3px}
+.deriv-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+.deriv-table th{background:#FAECE7;color:#993C1D;padding:6px 10px;font-weight:500;text-align:center;border:1px solid #F0997B}
+.deriv-table td{padding:6px 10px;border:1px solid #eee;text-align:center}
+.deriv-table td.ar-cell{font-size:18px;direction:rtl;color:#3C3489}
+.deriv-table tr:hover td{background:#fafafa}
+.qscore{display:flex;gap:6px;margin-bottom:.85rem}
+.qsi{background:#f5f5f0;border-radius:8px;padding:6px;font-size:11px;color:#666;flex:1;text-align:center}
+.qsn{font-size:16px;font-weight:500;color:#1a1a1a;display:block}
+.qcard{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.65rem}
+.qq{font-size:20px;text-align:center;margin-bottom:1rem}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.qopt{padding:8px;border-radius:8px;border:1px solid #ddd;background:#f5f5f0;cursor:pointer;font-size:13px;text-align:center;transition:all .15s}
+.qopt:hover:not(:disabled){border-color:#AFA9EC;background:#EEEDFE}
+.qopt.correct{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+.qopt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+
+.lockoverlay{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #eee}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(100px);background:#534AB7;color:white;padding:9px 20px;border-radius:16px;font-size:13px;transition:transform .4s;z-index:99;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+/* API key banner */
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="arabic-title">تعلم العربية</div>
+    <h1>Apprentissage de l'arabe — 5 niveaux</h1>
+  </div>
+  <div class="level-bar" id="levelBar"></div>
+  <div class="lhdr" id="levelHeader"></div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showSection('alphabet',this)">🔤 Alphabet</button>
+    <button class="nav-btn" onclick="showSection('vocab',this)">📚 Vocabulaire</button>
+    <button class="nav-btn" onclick="showSection('grammar',this)">📝 Grammaire</button>
+    <button class="nav-btn" onclick="showSection('morpho',this)">🔬 Morphologie</button>
+    <button class="nav-btn" onclick="showSection('quiz',this)">✏️ Quiz</button>
+  </nav>
+  <div class="section active" id="alphabet"></div>
+  <div class="section" id="vocab"></div>
+  <div class="section" id="grammar"></div>
+  <div class="section" id="morpho"></div>
+  <div class="section" id="quiz"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ── DATA ─────────────────────────────────────────────────
+const LEVELS=[
+{id:0,name:'Débutant',label:'Niveau 1',icon:'🌱',color:'#1D9E75',bg:'#E1F5EE',desc:'Alphabet, salutations, premiers mots',unlockScore:80,
+ alphabet:[{ar:'ا',name:'Alif',trans:'a',forms:['أ','إ','آ']},{ar:'ب',name:'Ba',trans:'b',forms:['بـ','ـبـ','ـب']},{ar:'ت',name:'Ta',trans:'t',forms:['تـ','ـتـ','ـت']},{ar:'ج',name:'Jim',trans:'dj',forms:['جـ','ـجـ','ـج']},{ar:'د',name:'Dal',trans:'d',forms:['ـد']},{ar:'ر',name:'Ra',trans:'r',forms:['ـر']},{ar:'س',name:'Sin',trans:'s',forms:['سـ','ـسـ','ـس']},{ar:'م',name:'Mim',trans:'m',forms:['مـ','ـمـ','ـم']},{ar:'ن',name:'Nun',trans:'n',forms:['نـ','ـنـ','ـن']},{ar:'و',name:'Waw',trans:'w',forms:['ـو']}],
+ vocab:[{ar:'مرحبا',fr:'Bonjour'},{ar:'شكرا',fr:'Merci'},{ar:'نعم',fr:'Oui'},{ar:'لا',fr:'Non'},{ar:'أنا',fr:'Je / Moi'},{ar:'ماء',fr:'Eau'},{ar:'خبز',fr:'Pain'},{ar:'واحد',fr:'Un (1)'},{ar:'اثنان',fr:'Deux (2)'},{ar:'ثلاثة',fr:'Trois (3)'}],
+ grammar:[
+  {title:"L'article défini : ال",rule:"ال (al-) est l'article défini. Un nom sans article est indéfini.",examples:[{ar:'بَيت',trans:'bayt',fr:'une maison'},{ar:'البَيت',trans:'al-bayt',fr:'la maison'},{ar:'كِتَاب',trans:'kitāb',fr:'un livre'},{ar:'الكِتَاب',trans:'al-kitāb',fr:'le livre'}],exercises:[{q:'Ajoute ال devant بَيت :',opts:['البيت','بيتال','بيتٌ','الابيت'],answer:'البيت',explain:'Al + bayt = البيت'},{q:'Quel mot est défini ?',opts:['كِتَاب','الكِتَاب','كتابٌ','كتابا'],answer:'الكِتَاب',explain:'الكتاب porte ال'},{q:'Traduis "le pain" :',opts:['خبزٌ','خبزا','الخبز','خبزي'],answer:'الخبز',explain:'Al + khubz = الخبز'}]},
+  {title:'Genre : masculin et féminin',rule:'Le féminin porte souvent ة. Les adjectifs s\'accordent.',examples:[{ar:'مُعَلِّم',trans:'muʿallim',fr:'enseignant'},{ar:'مُعَلِّمَة',trans:'muʿallima',fr:'enseignante'},{ar:'طَالِب',trans:'ṭālib',fr:'étudiant'},{ar:'طَالِبَة',trans:'ṭāliba',fr:'étudiante'}],exercises:[{q:'Quel mot est féminin ?',opts:['كِتَاب','مُعَلِّم','مَدرَسَة','بَاب'],answer:'مَدرَسَة',explain:'مدرسة porte ة → féminin'},{q:'Féminin de طَالِب :',opts:['طَالِبَة','طَالِبِي','طَالِبُون','طُلَّاب'],answer:'طَالِبَة',explain:'On ajoute ة'}]}
+ ],
+ morpho:[
+  {title:'Introduction aux racines trilitères',rule:'Presque tous les mots arabes dérivent d\'une racine de 3 consonnes (جذر). Ces 3 lettres portent un sens de base. On applique des schèmes (وزن) pour créer des mots différents.',rootExample:{root:['ك','ت','ب'],meaning:'idée d\'écriture'},
+   waznGrid:[{pattern:'فَعَلَ',label:'Verbe passé',example:'كَتَبَ',meaning:'il a écrit'},{pattern:'فَاعِل',label:'Agent actif',example:'كَاتِب',meaning:'écrivain'},{pattern:'مَفعُول',label:'Passif',example:'مَكتُوب',meaning:'écrit'},{pattern:'فِعَال',label:'Nom',example:'كِتَاب',meaning:'livre'},{pattern:'مَفعَل',label:'Lieu',example:'مَكتَب',meaning:'bureau'}],
+   derivTable:[{forme:'كَتَبَ',schème:'فَعَلَ',type:'Verbe (passé)',fr:'il a écrit'},{forme:'يَكتُبُ',schème:'يَفعُلُ',type:'Verbe (présent)',fr:'il écrit'},{forme:'كِتَاب',schème:'فِعَال',type:'Nom',fr:'livre'},{forme:'كَاتِب',schème:'فَاعِل',type:'Participe actif',fr:'écrivain'},{forme:'مَكتُوب',schème:'مَفعُول',type:'Participe passif',fr:'écrit'},{forme:'مَكتَب',schème:'مَفعَل',type:'Lieu',fr:'bureau'}],
+   exercises:[{q:'Racine de كِتَاب (livre) ?',opts:['ك-ت-ب','ك-ب-ر','ق-ر-أ','د-ر-س'],answer:'ك-ت-ب',explain:'ك-ت-ب est la racine de كتاب, كتب, كاتب, مكتب'},{q:'Schème فَاعِل sur ك-ت-ب donne ?',opts:['il a écrit','bureau','livre','écrivain'],answer:'écrivain',explain:'فاعل = celui qui fait → كاتب = écrivain'},{q:'Racine de مَكتَب (bureau) ?',opts:['م-ك-ت','ك-ت-ب','ب-ت-ك','ك-ب-ت'],answer:'ك-ت-ب',explain:'م est un préfixe du schème مَفعَل'}]}
+ ]
+},
+{id:1,name:'Élémentaire',label:'Niveau 2',icon:'📖',color:'#378ADD',bg:'#E6F1FB',desc:'Pronoms, verbes simples, famille',unlockScore:80,
+ alphabet:[{ar:'ح',name:'Ha',trans:'ḥ',forms:['حـ','ـحـ','ـح']},{ar:'خ',name:'Kha',trans:'kh',forms:['خـ','ـخـ','ـخ']},{ar:'ز',name:'Zay',trans:'z',forms:['ـز']},{ar:'ش',name:'Shin',trans:'sh',forms:['شـ','ـشـ','ـش']},{ar:'ع',name:'Ayn',trans:'ʿ',forms:['عـ','ـعـ','ـع']},{ar:'ف',name:'Fa',trans:'f',forms:['فـ','ـفـ','ـف']},{ar:'ك',name:'Kaf',trans:'k',forms:['كـ','ـكـ','ـك']},{ar:'ل',name:'Lam',trans:'l',forms:['لـ','ـلـ','ـل']},{ar:'ي',name:'Ya',trans:'y',forms:['يـ','ـيـ','ـي']}],
+ vocab:[{ar:'أنت',fr:'Tu (masc.)'},{ar:'هو',fr:'Il'},{ar:'هي',fr:'Elle'},{ar:'أب',fr:'Père'},{ar:'أم',fr:'Mère'},{ar:'أخ',fr:'Frère'},{ar:'ذهب',fr:'Il est allé'},{ar:'أكل',fr:'Il a mangé'},{ar:'كتب',fr:'Il a écrit'},{ar:'بيت',fr:'Maison'}],
+ grammar:[
+  {title:'Les pronoms personnels',rule:'Les pronoms varient selon genre et nombre. Souvent omis car la conjugaison suffit.',examples:[{ar:'أنا',trans:'anā',fr:'je'},{ar:'أنتَ',trans:'anta',fr:'tu (m.)'},{ar:'أنتِ',trans:'anti',fr:'tu (f.)'},{ar:'هو',trans:'huwa',fr:'il'},{ar:'هي',trans:'hiya',fr:'elle'},{ar:'نحن',trans:'naḥnu',fr:'nous'}],exercises:[{q:'"Elle" en arabe ?',opts:['هو','أنا','هي','أنتَ'],answer:'هي',explain:'هي = hiya = elle'},{q:'"Nous" en arabe ?',opts:['أنتم','هم','نحن','أنا'],answer:'نحن',explain:'نحن = naḥnu = nous'},{q:'Pronom masculin ?',opts:['هي','أنتِ','هو','هن'],answer:'هو',explain:'هو = huwa = il'}]},
+  {title:'Le verbe au passé',rule:'Le passé (3e masc. sing.) est la forme de base. On ajoute des suffixes pour changer la personne.',examples:[{ar:'ذَهَبَ',trans:'dhahaba',fr:'il est allé'},{ar:'ذَهَبَت',trans:'dhahabat',fr:'elle est allée'},{ar:'ذَهَبتُ',trans:'dhahabtu',fr:'je suis allé(e)'}],exercises:[{q:'"Il a mangé" au passé ?',opts:['يأكل','أكلتُ','أَكَلَ','أكلنا'],answer:'أَكَلَ',explain:'أكل = passé 3e masc.'},{q:'ذَهَبَت signifie ?',opts:['il est allé','elle est allée','je suis allé','nous allons'],answer:'elle est allée',explain:'ت final = féminin'}]}
+ ],
+ morpho:[
+  {title:'Les schèmes du verbe : الأوزان الفعلية',rule:'Le schème فَعَلَ est le plus courant au passé. On identifie la racine en repérant les 3 consonnes de base (ف, ع, ل = positions 1, 2, 3).',rootExample:{root:['ف','ع','ل'],meaning:'Modèle des 3 positions de la racine'},
+   waznGrid:[{pattern:'فَعَلَ',label:'Passé accompli',example:'ذَهَبَ',meaning:'il est allé'},{pattern:'فَعِلَ',label:'Passé (état)',example:'فَرِحَ',meaning:"il s'est réjoui"},{pattern:'فَعُلَ',label:'Passé (qualité)',example:'كَبُرَ',meaning:'il a grandi'},{pattern:'يَفعَلُ',label:'Présent type 1',example:'يَذهَبُ',meaning:'il va'},{pattern:'يَفعِلُ',label:'Présent type 2',example:'يَجلِسُ',meaning:"il s'assoit"}],
+   derivTable:[{forme:'ذَهَبَ',schème:'فَعَلَ',type:'Passé',fr:'il est allé'},{forme:'يَذهَبُ',schème:'يَفعَلُ',type:'Présent',fr:'il va'},{forme:'ذَاهِب',schème:'فَاعِل',type:'Participe actif',fr:'allant/partant'},{forme:'ذَهَاب',schème:'فَعَال',type:'Nom verbal',fr:"l'action d'aller"}],
+   exercises:[{q:'Schème de ذَهَبَ ?',opts:['فَعِلَ','فَعَلَ','فَعُلَ','يَفعَلُ'],answer:'فَعَلَ',explain:'dhahaba suit فَعَلَ : ذ=ف, ه=ع, ب=ل'},{q:'Dans فَعَلَ, ف représente ?',opts:['2e consonne','3e consonne','1re consonne','préfixe'],answer:'1re consonne',explain:'ف = première position de la racine'},{q:'Racine de يَذهَبُ ?',opts:['ي-ذ-ه','ذ-ه-ب','ي-ه-ب','ذ-ب-ه'],answer:'ذ-ه-ب',explain:'يـ est un préfixe, la racine est ذ-ه-ب'}]},
+  {title:'Racine د-ر-س : étudier',rule:'La racine د-ر-س exprime l\'étude et l\'enseignement. Très utile dans le contexte scolaire !',rootExample:{root:['د','ر','س'],meaning:"idée d'étude / enseignement"},
+   waznGrid:[{pattern:'فَعَلَ',label:'Verbe passé',example:'دَرَسَ',meaning:'il a étudié'},{pattern:'فَعَّلَ',label:'Verbe causatif',example:'دَرَّسَ',meaning:'il a enseigné'},{pattern:'مُفَعِّل',label:'Enseignant',example:'مُدَرِّس',meaning:'enseignant'},{pattern:'مَفعَل',label:'Lieu',example:'مَدرَسَة',meaning:'école'},{pattern:'فِعَالَة',label:'Nom verbal',example:'دِرَاسَة',meaning:'étude'}],
+   derivTable:[{forme:'دَرَسَ',schème:'فَعَلَ',type:'Verbe (passé)',fr:'il a étudié'},{forme:'دَرَّسَ',schème:'فَعَّلَ',type:'Verbe causatif',fr:'il a enseigné'},{forme:'مُدَرِّس',schème:'مُفَعِّل',type:"Nom d'agent",fr:'enseignant'},{forme:'مَدرَسَة',schème:'مَفعَلة',type:'Lieu',fr:'école'},{forme:'دِرَاسَة',schème:'فِعَالَة',type:'Nom verbal',fr:'étude'}],
+   exercises:[{q:'Racine de مُدَرِّس (enseignant) ?',opts:['م-د-ر','د-ر-س','ر-د-س','د-س-ر'],answer:'د-ر-س',explain:'مُ est du schème, la racine est د-ر-س'},{q:'مَدرَسَة suit quel schème ?',opts:['فَاعِل','مَفعَل','فِعَال','مُفَعِّل'],answer:'مَفعَل',explain:'مَفعَل = schème de lieu → école = lieu d\'étude'}]}
+ ]
+},
+{id:2,name:'Intermédiaire',label:'Niveau 3',icon:'🌙',color:'#534AB7',bg:'#EEEDFE',desc:'Grammaire, conjugaison, conversations',unlockScore:80,
+ alphabet:[{ar:'ث',name:'Tha',trans:'th',forms:['ثـ','ـثـ','ـث']},{ar:'ذ',name:'Dhal',trans:'dh',forms:['ـذ']},{ar:'ص',name:'Sad',trans:'ṣ',forms:['صـ','ـصـ','ـص']},{ar:'ض',name:'Dad',trans:'ḍ',forms:['ضـ','ـضـ','ـض']},{ar:'ط',name:'Ta emp.',trans:'ṭ',forms:['طـ','ـطـ','ـط']},{ar:'ظ',name:'Dha emp.',trans:'ẓ',forms:['ظـ','ـظـ','ـظ']},{ar:'غ',name:'Ghayn',trans:'gh',forms:['غـ','ـغـ','ـغ']},{ar:'ق',name:'Qaf',trans:'q',forms:['قـ','ـقـ','ـق']},{ar:'ه',name:'Ha',trans:'h',forms:['هـ','ـهـ','ـه']}],
+ vocab:[{ar:'يذهب',fr:'Il va'},{ar:'يأكل',fr:'Il mange'},{ar:'سيذهب',fr:'Il ira'},{ar:'مدرسة',fr:'École'},{ar:'طالب',fr:'Étudiant'},{ar:'معلم',fr:'Enseignant'},{ar:'كبير',fr:'Grand'},{ar:'صغير',fr:'Petit'},{ar:'جميل',fr:'Beau'},{ar:'كيف حالك',fr:'Comment vas-tu ?'}],
+ grammar:[
+  {title:'Le verbe au présent',rule:'Préfixes : يـ (3e m.), تـ (3e f./2e m.), أـ (1re), نـ (1re pl.)',examples:[{ar:'يَذهَبُ',trans:'yadhhab',fr:'il va'},{ar:'تَذهَبُ',trans:'tadhhab',fr:'elle va'},{ar:'أَذهَبُ',trans:'adhhab',fr:'je vais'},{ar:'نَذهَبُ',trans:'nadhhab',fr:'nous allons'}],exercises:[{q:'"Il écrit" au présent ?',opts:['كَتَبَ','يَكتُبُ','تَكتُبُ','أكتُبُ'],answer:'يَكتُبُ',explain:'يـ + كتب = يكتب'},{q:'أَذهَبُ signifie ?',opts:['il va','tu vas','je vais','nous allons'],answer:'je vais',explain:'أ = préfixe 1re personne'}]},
+  {title:'La phrase nominale',rule:'Pas de verbe être au présent : sujet + prédicat suffit.',examples:[{ar:'البيتُ كبيرٌ',trans:'al-baytu kabīr',fr:'La maison est grande'},{ar:'أنا مُعلِّمٌ',trans:'anā muʿallim',fr:'Je suis enseignant'}],exercises:[{q:'Traduis "La maison est grande" :',opts:['البيتُ كبيرٌ','البيتُ يكبر','كبيرٌ البيت','البيتُ وكبير'],answer:'البيتُ كبيرٌ',explain:'Sujet + adjectif sans verbe être'}]}
+ ],
+ morpho:[
+  {title:'Les formes verbales augmentées I–VI',rule:'À partir d\'une racine, on crée des verbes augmentés en ajoutant des lettres. Chaque forme a un sens modifié prévisible.',rootExample:{root:['ع','ل','م'],meaning:'idée de savoir / connaissance'},
+   waznGrid:[{pattern:'فَعَلَ (I)',label:'Base',example:'عَلِمَ',meaning:'il a su'},{pattern:'فَعَّلَ (II)',label:'Causatif',example:'عَلَّمَ',meaning:'il a enseigné'},{pattern:'فَاعَلَ (III)',label:'Réciproque',example:'عَالَمَ',meaning:'être informé mutuellement'},{pattern:'أَفعَلَ (IV)',label:'Causatif',example:'أَعلَمَ',meaning:'il a informé'},{pattern:'تَفَعَّلَ (V)',label:'Réfléchi de II',example:'تَعَلَّمَ',meaning:'il a appris'},{pattern:'تَفَاعَلَ (VI)',label:'Réfléchi de III',example:'تَعَاوَنَ',meaning:'il a coopéré'}],
+   derivTable:[{forme:'عَلِمَ',schème:'فَعِلَ (I)',type:'Base',fr:'il a su'},{forme:'عَلَّمَ',schème:'فَعَّلَ (II)',type:'Causatif',fr:'il a enseigné'},{forme:'أَعلَمَ',schème:'أَفعَلَ (IV)',type:'Causatif',fr:'il a informé'},{forme:'تَعَلَّمَ',schème:'تَفَعَّلَ (V)',type:'Réfléchi',fr:'il a appris'},{forme:'عِلم',schème:'فِعل',type:'Nom',fr:'science'},{forme:'عَالِم',schème:'فَاعِل',type:'Participe actif',fr:'savant'}],
+   exercises:[{q:'تَعَلَّمَ suit quelle forme ?',opts:['Forme I','Forme II','Forme IV','Forme V'],answer:'Forme V',explain:'تَفَعَّلَ = Forme V, réfléchi de II'},{q:'La Forme II exprime souvent ?',opts:['un état','causatif/intensif','réflexivité','réciprocité'],answer:'causatif/intensif',explain:'عَلَّمَ = faire savoir = enseigner'},{q:'Quelle forme signifie "apprendre" ?',opts:['عَلِمَ','عَلَّمَ','تَعَلَّمَ','أَعلَمَ'],answer:'تَعَلَّمَ',explain:'تَعَلَّمَ = se faire enseigner = apprendre'}]},
+  {title:'Le masdar (المصدر) par forme verbale',rule:'Chaque forme verbale produit un masdar selon un schème prévisible. Cela permet de deviner le sens d\'un mot inconnu.',rootExample:{root:['ك','ت','ب'],meaning:'masdar par forme verbale'},
+   waznGrid:[{pattern:'فَعل / فُعُول (I)',label:'Masdar I',example:'كَتب / ذَهَاب',meaning:'écriture / aller'},{pattern:'تَفعِيل (II)',label:'Masdar II',example:'تَعلِيم',meaning:'enseignement'},{pattern:'إِفعَال (IV)',label:'Masdar IV',example:'إِعلَام',meaning:'information'},{pattern:'تَفَعُّل (V)',label:'Masdar V',example:'تَعَلُّم',meaning:'apprentissage'},{pattern:'اِفتِعَال (VIII)',label:'Masdar VIII',example:'اِجتِمَاع',meaning:'réunion'}],
+   derivTable:[{forme:'عَلَّمَ',schème:'فَعَّلَ (II)',type:'Verbe',fr:'il a enseigné'},{forme:'تَعلِيم',schème:'تَفعِيل',type:'Masdar II',fr:'enseignement'},{forme:'أَعلَمَ',schème:'أَفعَلَ (IV)',type:'Verbe',fr:'il a informé'},{forme:'إِعلَام',schème:'إِفعَال',type:'Masdar IV',fr:'information/médias'},{forme:'تَعَلَّمَ',schème:'تَفَعَّلَ (V)',type:'Verbe',fr:'il a appris'},{forme:'تَعَلُّم',schème:'تَفَعُّل',type:'Masdar V',fr:'apprentissage'}],
+   exercises:[{q:'Masdar de تَعَلَّمَ (Forme V) ?',opts:['تَعلِيم','إِعلَام','تَعَلُّم','تَعَالُم'],answer:'تَعَلُّم',explain:'Forme V → تَفَعُّل → تَعَلُّم'},{q:'إِعلَام vient de quelle forme ?',opts:['Forme I','Forme II','Forme IV','Forme V'],answer:'Forme IV',explain:'إِفعَال = masdar de la Forme IV'}]}
+ ]
+},
+{id:3,name:'Avancé',label:'Niveau 4',icon:'⭐',color:'#BA7517',bg:'#FAEEDA',desc:'Textes complexes, dialectes, littérature',unlockScore:80,
+ alphabet:[{ar:'ة',name:'Ta marbuta',trans:'a/at',forms:['ـة']},{ar:'ى',name:'Alif maqsura',trans:'â',forms:['ـى']},{ar:'ء',name:'Hamza',trans:"ʾ",forms:['ء','أ','إ','ؤ','ئ']},{ar:'ّ',name:'Shadda',trans:'double',forms:['ـّ']}],
+ vocab:[{ar:'الجمهورية',fr:'La République'},{ar:'الاقتصاد',fr:"L'économie"},{ar:'المجتمع',fr:'La société'},{ar:'التاريخ',fr:"L'histoire"},{ar:'الفلسفة',fr:'La philosophie'},{ar:'يستطيع',fr:'Il peut'},{ar:'يجب',fr:'Il faut'},{ar:'ربما',fr:'Peut-être'},{ar:'على الرغم من',fr:'Malgré'},{ar:'بينما',fr:'Tandis que'}],
+ grammar:[
+  {title:'Les cas grammaticaux : الإعراب',rule:'3 cas : nominatif (مرفوع, ـُ), accusatif (منصوب, ـَ), génitif (مجرور, ـِ).',examples:[{ar:'جاءَ الطالبُ',trans:'',fr:'nominatif (sujet)'},{ar:'رأيتُ الطالبَ',trans:'',fr:'accusatif (objet)'},{ar:'مررتُ بالطالبِ',trans:'',fr:'génitif (après prép.)'}],exercises:[{q:'Cas du sujet ?',opts:['منصوب','مرفوع','مجرور','مبني'],answer:'مرفوع',explain:'مرفوع = nominatif = sujet'},{q:'ـِ correspond à quel cas ?',opts:['nominatif','accusatif','génitif','apocopé'],answer:'génitif',explain:'ـِ = kasra = مجرور'}]},
+  {title:'Duel et pluriel',rule:'Singulier / duel (ـان/ـين) / pluriel régulier ou brisé.',examples:[{ar:'كِتَابٌ',trans:'kitāb',fr:'un livre'},{ar:'كِتَابَان',trans:'kitābān',fr:'deux livres'},{ar:'كُتُبٌ',trans:'kutub',fr:'des livres'}],exercises:[{q:'Duel de كتاب ?',opts:['كتابون','كتابان','كتابات','كتابين'],answer:'كتابان',explain:'Duel nominatif : ajout de ـان'},{q:'طُلَّاب est quel nombre ?',opts:['singulier','duel','pluriel','collectif'],answer:'pluriel',explain:'طلاب = pluriel brisé de طالب'}]}
+ ],
+ morpho:[
+  {title:'Formes VIII, X et passif',rule:'Forme VIII (اِفتَعَلَ) = action accomplie pour soi. Forme X (اِستَفعَلَ) = demander / estimer. Le passif remplace le sujet par l\'objet.',rootExample:{root:['ج','م','ع'],meaning:'idée de rassemblement'},
+   waznGrid:[{pattern:'جَمَعَ (I)',label:'Rassembler',example:'جَمَعَ',meaning:'il a rassemblé'},{pattern:'اِجتَمَعَ (VIII)',label:'Se rassembler',example:'اِجتَمَعَ',meaning:"il s'est réuni"},{pattern:'اِستَجمَعَ (X)',label:'Pour soi',example:'اِستَجمَعَ',meaning:'il a rassemblé ses forces'},{pattern:'جُمِعَ (passif I)',label:'Passif',example:'جُمِعَ',meaning:'il fut rassemblé'},{pattern:'مُجتَمَع',label:'Nom lieu/passif',example:'مُجتَمَع',meaning:'société'}],
+   derivTable:[{forme:'جَمَعَ',schème:'فَعَلَ (I)',type:'Actif',fr:'il a rassemblé'},{forme:'جُمِعَ',schème:'فُعِلَ (passif I)',type:'Passif',fr:'il fut rassemblé'},{forme:'اِجتَمَعَ',schème:'اِفتَعَلَ (VIII)',type:'Réfléchi',fr:"il s'est réuni"},{forme:'اِجتِمَاع',schème:'اِفتِعَال',type:'Masdar VIII',fr:'réunion'},{forme:'مُجتَمَع',schème:'مُفتَعَل',type:'Nom passif',fr:'société'}],
+   exercises:[{q:'اِجتَمَعَ suit quelle forme ?',opts:['Forme I','Forme V','Forme VIII','Forme X'],answer:'Forme VIII',explain:'اِفتَعَلَ = Forme VIII'},{q:'جُمِعَ est ?',opts:['passé actif','présent','passif','impératif'],answer:'passif',explain:'فُعِلَ = schème du passif Forme I'},{q:'مُجتَمَع (société) dérive de ?',opts:['جَمَعَ I','اِجتَمَعَ VIII','جَمَّعَ II','تَجَمَّعَ V'],answer:'اِجتَمَعَ VIII',explain:'مُجتَمَع = participe passif Forme VIII'}]},
+  {title:"Noms d'instrument et de lieu",rule:'Schèmes spécialisés : lieu (مَفعَل/مَفعِل), instrument (مِفعَال/مِفعَلة).',rootExample:{root:['ك','ت','ب'],meaning:"Noms de lieu et d'instrument"},
+   waznGrid:[{pattern:'مَفعَل',label:'Lieu',example:'مَكتَب',meaning:'bureau'},{pattern:'مَفعِل',label:'Lieu (variante)',example:'مَسجِد',meaning:'mosquée'},{pattern:'مِفعَال',label:'Instrument',example:'مِفتَاح',meaning:'clé'},{pattern:'مِفعَلة',label:'Instrument (f.)',example:'مِكنَسة',meaning:'balai'},{pattern:'فَعَّال',label:'Métier',example:'كَتَّاب',meaning:'scribe'}],
+   derivTable:[{forme:'مَكتَب',schème:'مَفعَل',type:'Lieu',fr:'bureau'},{forme:'مَدرَسة',schème:'مَفعَلة',type:'Lieu',fr:'école'},{forme:'مَسجِد',schème:'مَفعِل',type:'Lieu',fr:'mosquée'},{forme:'مِفتَاح',schème:'مِفعَال',type:'Instrument',fr:'clé'},{forme:'مِكنَسة',schème:'مِفعَلة',type:'Instrument',fr:'balai'}],
+   exercises:[{q:'مِفتَاح suit quel schème ?',opts:['مَفعَل','مَفعِل','مِفعَال','فَعَّال'],answer:'مِفعَال',explain:'مِفعَال = schème instrument'},{q:'مَسجِد est un nom de ?',opts:['instrument','agent','lieu','action'],answer:'lieu',explain:'مَفعِل = schème de lieu'},{q:'Racine de مَدرَسة ?',opts:['م-د-ر','د-ر-س','ر-س-م','د-س-م'],answer:'د-ر-س',explain:'م est du schème, la racine est د-ر-س'}]}
+ ]
+},
+{id:4,name:'Expert',label:'Niveau 5',icon:'🏆',color:'#993556',bg:'#FBEAF0',desc:'Arabe classique, rhétorique, textes coraniques',unlockScore:null,
+ alphabet:[{ar:'إِنَّ',name:'Inna',trans:'certes',forms:['إِنَّ']},{ar:'كَانَ',name:'Kana',trans:'était',forms:['كَانَ']},{ar:'لَيْسَ',name:'Laysa',trans:"n'est pas",forms:['لَيْسَ']}],
+ vocab:[{ar:'الحَمدُ للهِ',fr:'Louange à Dieu'},{ar:'بِسمِ اللهِ',fr:'Au nom de Dieu'},{ar:'الصَّرف',fr:'La morphologie'},{ar:'النَّحو',fr:'La syntaxe'},{ar:'البَلاغة',fr:'La rhétorique'},{ar:'الإعراب',fr:'Analyse grammaticale'},{ar:'المَصدَر',fr:'Nom verbal'},{ar:'الفِعلُ المُضارع',fr:'Verbe au présent'},{ar:'الإسناد',fr:'Prédication'},{ar:'الضَّمير',fr:'Pronom'}],
+ grammar:[
+  {title:'إِنَّ وأخواتها',rule:'Particules d\'emphase. Mettent leur sujet à l\'accusatif.',examples:[{ar:'إِنَّ الطالبَ مجتهدٌ',trans:'',fr:'Certes l\'étudiant est appliqué'},{ar:'لَيتَ الشبابَ يعود',trans:'',fr:'Que la jeunesse revienne !'},{ar:'لَعَلَّ الأملَ قريبٌ',trans:'',fr:'Peut-être que l\'espoir est proche'}],exercises:[{q:'Cas du nom après إنَّ ?',opts:['مرفوع','منصوب','مجرور','مبني'],answer:'منصوب',explain:'اسم إنّ = accusatif'},{q:'لَيتَ signifie ?',opts:['certes','peut-être','comme si','plût au ciel'],answer:'plût au ciel',explain:'ليت = souhait irréel'}]},
+  {title:'Le masdar المصدر',rule:'Nom dérivé du verbe. Chaque forme a son masdar propre.',examples:[{ar:'كَتَبَ → الكِتَابَة',trans:'',fr:'écriture'},{ar:'تَعَلَّمَ → تَعَلُّم',trans:'',fr:'apprentissage'},{ar:'أَعلَمَ → إِعلَام',trans:'',fr:'information'}],exercises:[{q:'Masdar de تَعَلَّمَ (Forme V) ?',opts:['تَعلِيم','إِعلَام','تَعَلُّم','تَعَالُم'],answer:'تَعَلُّم',explain:'Forme V → تَفَعُّل'}]}
+ ],
+ morpho:[
+  {title:'Morphologie coranique : علم الصرف',rule:'L\'arabe coranique utilise des schèmes classiques très précis. Le schème فَعِيل est fréquent pour les adjectifs de qualité intense.',rootExample:{root:['ر','ح','م'],meaning:'idée de miséricorde'},
+   waznGrid:[{pattern:'فَعِيل',label:'Qualité intense',example:'رَحِيم',meaning:'très miséricordieux'},{pattern:'فَعلَان',label:'Superlatif',example:'رَحمَان',meaning:'Tout-Miséricordieux'},{pattern:'فَاعِل',label:'Participe actif',example:'رَاحِم',meaning:'miséricordieux'},{pattern:'مَفعُول',label:'Passif',example:'مَرحُوم',meaning:'béni/regretté'},{pattern:'اِستَفعَلَ (X)',label:'Demander',example:'اِستَرحَمَ',meaning:'implorer la pitié'}],
+   derivTable:[{forme:'رَحِمَ',schème:'فَعِلَ (I)',type:'Verbe',fr:'il a eu pitié'},{forme:'رَحمَة',schème:'فَعلَة',type:'Nom',fr:'miséricorde'},{forme:'رَحِيم',schème:'فَعِيل',type:'Adjectif intense',fr:'très miséricordieux'},{forme:'رَحمَان',schème:'فَعلَان',type:'Superlatif',fr:'Tout-Miséricordieux'},{forme:'مَرحُوم',schème:'مَفعُول',type:'Participe passif',fr:'béni/regretté'}],
+   exercises:[{q:'رَحِيم suit quel schème ?',opts:['فَاعِل','فَعَّال','فَعِيل','مَفعُول'],answer:'فَعِيل',explain:'فَعِيل = qualité intense'},{q:'Racine de رَحمَة ?',opts:['ر-ح-م','ر-م-ح','ح-ر-م','م-ر-ح'],answer:'ر-ح-م',explain:'ة est un suffixe nominal'},{q:'اِستَرحَمَ suit quelle forme ?',opts:['II','IV','VIII','X'],answer:'X',explain:'اِستَفعَلَ = Forme X'},{q:'مَرحُوم signifie "béni" car ?',opts:["c'est un verbe","schème de lieu","مَفعُول = passif","c'est un masdar"],answer:'مَفعُول = passif',explain:'مَفعُول = celui sur qui l\'action est faite'}]},
+  {title:'Hyperboles et comparatifs : مبالغة و تفضيل',rule:'اسم المبالغة exprime une qualité à l\'extrême. اسم التفضيل (comparatif) suit le schème أَفعَل.',rootExample:{root:['ع','ل','م'],meaning:'Hyperboles et comparatifs'},
+   waznGrid:[{pattern:'فَعِيل (مبالغة)',label:'Hyperbole 1',example:'عَلِيم',meaning:'omniscient'},{pattern:'فَعَّال (مبالغة)',label:'Hyperbole 2',example:'عَلَّام',meaning:'très savant'},{pattern:'فَعُول (مبالغة)',label:'Hyperbole 3',example:'صَبُور',meaning:'très patient'},{pattern:'أَفعَل (تفضيل)',label:'Comparatif',example:'أَعلَم',meaning:'plus savant'},{pattern:'فُعلَى (مؤنث)',label:'Superlatif fém.',example:'عُظمَى',meaning:'la plus grande'}],
+   derivTable:[{forme:'عَالِم',schème:'فَاعِل',type:'Participe actif',fr:'savant'},{forme:'عَلِيم',schème:'فَعِيل',type:'Hyperbole',fr:'très savant / omniscient'},{forme:'عَلَّام',schème:'فَعَّال',type:'Hyperbole',fr:'grand savant'},{forme:'أَعلَم',schème:'أَفعَل',type:'Comparatif',fr:'le plus savant'}],
+   exercises:[{q:'صَبُور suit quel schème de مبالغة ?',opts:['فَعِيل','فَعَّال','فَعُول','أَفعَل'],answer:'فَعُول',explain:'فَعُول = 3e schème d\'hyperbole'},{q:'أَعلَم suit le schème ?',opts:['فَعِيل','فَعَّال','فَعُول','أَفعَل'],answer:'أَفعَل',explain:'أَفعَل = comparatif (اسم التفضيل)'},{q:'Différence عَالِم vs عَلِيم ?',opts:['même sens','عالم=participe actif, عليم=hyperbole','عليم=lieu','عالم=passif'],answer:'عالم=participe actif, عليم=hyperbole',explain:'فَاعِل = participe ; فَعِيل = intensification'}]}
+ ]
+}];
+
+let cLvl=0,scores=[100,0,0,0,0],unlocked=[true,false,false,false,false];
+let fcIdx=0,knownCards=new Set(),qC=0,qT=0;
+let gTop=0,gExI=0,gSc=0,gTot=0,mTop=0,mExI=0,mSc=0,mTot=0;
+let curSec='alphabet',curAns='';
+
+try{const u=localStorage.getItem('ar5_unl');if(u)unlocked=JSON.parse(u);}catch(e){}
+try{const s=localStorage.getItem('ar5_sc');if(s)scores=JSON.parse(s);}catch(e){}
+function save(){try{localStorage.setItem('ar5_unl',JSON.stringify(unlocked));localStorage.setItem('ar5_sc',JSON.stringify(scores));}catch(e){}}
+
+function renderLevelBar(){
+  document.getElementById('levelBar').innerHTML=LEVELS.map((l,i)=>{
+    const lk=!unlocked[i],ac=i===cLvl;
+    return `<button class="lvl-btn${ac?' active':''}${lk?' locked':''}" onclick="${lk?'showLockMsg('+i+')':'selectLevel('+i+')'}" style="${ac?'border-color:'+l.color:''}">
+      ${lk?'<span class="lico">🔒</span>':''}
+      <span class="li">${l.icon}</span>
+      <div class="ln" style="${ac?'color:'+l.color:''}">${l.name}</div>
+      <div class="ll">${l.label}</div>
+      ${lk&&i>0?`<div class="bn">${LEVELS[i-1].unlockScore}%</div>`:''}
+    </button>`;
+  }).join('');
+}
+function renderLevelHeader(){
+  const l=LEVELS[cLvl],p=scores[cLvl]||0;
+  document.getElementById('levelHeader').innerHTML=`<div class="lbadge" style="background:${l.bg}">${l.icon}</div><div class="linfo"><h2>${l.label} — ${l.name}</h2><p>${l.desc}</p></div><div class="lprog"><div class="pct">${p}%</div><div class="pctlbl">Score quiz</div><div class="pbsm"><div class="pfsm" style="width:${p}%;background:${l.color}"></div></div></div>`;
+}
+function selectLevel(i){if(!unlocked[i])return;cLvl=i;fcIdx=0;knownCards.clear();qC=0;qT=0;gTop=0;gExI=0;gSc=0;gTot=0;mTop=0;mExI=0;mSc=0;mTot=0;renderLevelBar();renderLevelHeader();showSection(curSec,null);}
+function showLockMsg(i){showToast(`🔒 Obtenez ${LEVELS[i-1].unlockScore}% au quiz du niveau ${i} (actuel : ${scores[i-1]||0}%)`);}
+function showSection(id,btn){
+  curSec=id;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  if(!unlocked[cLvl]){document.getElementById(id).innerHTML=`<div class="lockoverlay"><div style="font-size:38px;margin-bottom:.65rem">🔒</div><h3 style="font-size:14px;font-weight:500;margin-bottom:4px">Niveau verrouillé</h3><p style="font-size:12px;color:#666">Obtenez ${LEVELS[cLvl-1]?.unlockScore||80}% au quiz du Niveau ${cLvl}.<br>Score actuel : <strong>${scores[cLvl-1]||0}%</strong></p></div>`;return;}
+  if(id==='alphabet')renderAlphabet();
+  else if(id==='vocab'){fcIdx=0;knownCards.clear();renderVocab();}
+  else if(id==='grammar'){gTop=0;gExI=0;gSc=0;gTot=0;renderGrammar();}
+  else if(id==='morpho'){mTop=0;mExI=0;mSc=0;mTot=0;renderMorpho();}
+  else if(id==='quiz'){qC=0;qT=0;renderQuiz();}
+}
+function renderAlphabet(){
+  const el=document.getElementById('alphabet'),lt=LEVELS[cLvl].alphabet;
+  el.innerHTML=`<div class="agrid">${lt.map((l,i)=>`<div class="lcard" onclick="showLetter(${i})"><div class="lar">${l.ar}</div><div class="lnm">${l.name}</div><div class="lnm" style="color:#7F77DD">${l.trans}</div></div>`).join('')}</div><div id="lDet"></div>`;
+}
+function showLetter(i){
+  const l=LEVELS[cLvl].alphabet[i];
+  document.querySelectorAll('.lcard').forEach((c,j)=>c.classList.toggle('sel',j===i));
+  document.getElementById('lDet').innerHTML=`<div class="ldet"><div style="display:flex;align-items:center;gap:.85rem;flex-wrap:wrap"><div style="font-size:54px;direction:rtl;color:#534AB7;line-height:1">${l.ar}</div><div><div style="font-size:14px;font-weight:500">${l.name}</div><div style="font-size:12px;color:#666">Translittération : <strong>${l.trans}</strong></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">${l.forms.map(f=>`<div class="fbadge">${f}</div>`).join('')}</div></div></div></div>`;
+}
+function renderVocab(){
+  const el=document.getElementById('vocab'),v=LEVELS[cLvl].vocab;
+  el.innerHTML=`<div class="pb"><div class="pf" id="pf" style="width:0%"></div></div><p style="font-size:11px;color:#999;text-align:center;margin-bottom:.65rem" id="fcc">Carte 1/${v.length}</p><div class="fcwrap" onclick="flipCard()"><div class="fc" id="fc"><div class="cface cfront"><div class="cword" id="cw"></div><div class="chint">Cliquez pour la traduction</div></div><div class="cface cback"><div class="ctrans" id="ct"></div></div></div></div><div class="fcc"><button class="bunknown" onclick="rateCard(false)">✗ À revoir</button><button onclick="flipCard()">↩ Retourner</button><button class="bknown" onclick="rateCard(true)">✓ Connu</button></div>`;
+  updateFC();
+}
+function updateFC(){const v=LEVELS[cLvl].vocab,it=v[fcIdx];document.getElementById('cw').textContent=it.ar;document.getElementById('ct').textContent=it.fr;document.getElementById('fc').classList.remove('flipped');document.getElementById('fcc').textContent=`Carte ${fcIdx+1}/${v.length} — Maîtrisées : ${knownCards.size}`;document.getElementById('pf').style.width=(knownCards.size/v.length*100)+'%';}
+function flipCard(){document.getElementById('fc').classList.toggle('flipped');}
+function rateCard(k){if(k)knownCards.add(fcIdx);fcIdx=(fcIdx+1)%LEVELS[cLvl].vocab.length;updateFC();}
+function renderGrammar(){
+  const el=document.getElementById('grammar'),topics=LEVELS[cLvl].grammar;
+  if(!topics?.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:#999">Aucun contenu.</div>';return;}
+  const t=topics[gTop];
+  el.innerHTML=`<div class="mod-tabs">${topics.map((tp,i)=>`<button class="mtab${i===gTop?' active':''}" onclick="selGTop(${i})">${tp.title.substring(0,28)}</button>`).join('')}</div>
+  <div class="lesson-box"><h3>${t.title}</h3><div class="rule-box">${t.rule}</div>${t.examples.map(e=>`<div class="ex-row"><div class="ex-ar">${e.ar}</div><div class="ex-tr">${e.trans}</div><div class="ex-fr">${e.fr}</div></div>`).join('')}</div>
+  <div class="gscore-row"><span style="font-size:12px;color:#666">Exercices :</span><span class="gsbadge gram" id="gsbg">${gSc}/${gTot} — Q.${gExI+1}/${t.exercises.length}</span></div>
+  <div id="gExArea">${renderGEx(t,t.exercises[gExI])}</div>`;
+}
+function renderGEx(t,ex){if(!ex)return`<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : ${gSc}/${gTot} <button class="next-btn" onclick="resetG()">Recommencer</button></div>`;return`<div class="g-ex"><h4>Question ${gExI+1}/${t.exercises.length}</h4><div class="g-q">${ex.q}</div><div class="g-opts">${ex.opts.map(o=>`<button class="g-opt" onclick="checkG(this,'${o.replace(/'/g,"&#39;").replace(/"/g,'&quot;")}')">${o}</button>`).join('')}</div><div class="g-fb" id="gfb"></div></div>`;}
+function selGTop(i){gTop=i;gExI=0;gSc=0;gTot=0;renderGrammar();}
+function resetG(){gExI=0;gSc=0;gTot=0;renderGrammar();}
+function checkG(btn,ans){
+  const t=LEVELS[cLvl].grammar[gTop],ex=t.exercises[gExI];
+  document.querySelectorAll('#grammar .g-opt').forEach(b=>b.disabled=true);gTot++;
+  if(ans===ex.answer){btn.classList.add('correct');gSc++;document.getElementById('gfb').innerHTML=`<span style="color:#3B6D11">✓ ${ex.explain}</span>`;}
+  else{btn.classList.add('wrong');document.querySelectorAll('#grammar .g-opt').forEach(b=>{if(b.textContent===ex.answer)b.classList.add('correct');});document.getElementById('gfb').innerHTML=`<span style="color:#A32D2D">✗ ${ex.explain}</span>`;}
+  document.getElementById('gsbg').textContent=`${gSc}/${gTot} — Q.${gExI+1}/${t.exercises.length}`;
+  setTimeout(()=>{gExI++;if(gExI>=t.exercises.length){document.getElementById('gExArea').innerHTML=`<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : ${gSc}/${gTot} <button class="next-btn" onclick="resetG()">Recommencer</button></div>`;return;}renderGrammar();},1500);
+}
+function renderMorpho(){
+  const el=document.getElementById('morpho'),topics=LEVELS[cLvl].morpho;
+  if(!topics?.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:#999">Aucun contenu.</div>';return;}
+  const t=topics[mTop];const root=t.rootExample;
+  el.innerHTML=`<div class="mod-tabs">${topics.map((tp,i)=>`<button class="mtab${i===mTop?' active morpho':''}" onclick="selMTop(${i})">${tp.title.substring(0,30)}</button>`).join('')}</div>
+  <div class="lesson-box"><h3>${t.title}</h3><div class="rule-box morpho-rule">${t.rule}</div>
+  <div class="root-display"><div style="font-size:12px;color:#666;margin-bottom:6px">Racine — ${root.meaning}</div><div class="root-letters">${root.root.map((l,i)=>`<div class="root-letter"><div class="rl-ar">${l}</div><div class="rl-num">${['ف','ع','ل'][i]}</div></div>`).join('')}</div></div>
+  <div style="font-size:12px;font-weight:500;color:#993C1D;margin-bottom:6px">Schèmes appliqués :</div>
+  <div class="wazn-grid">${t.waznGrid.map((w,i)=>`<div class="wazn-card" onclick="selectWazn(${i})"><div class="wpattern">${w.pattern}</div><div class="wlabel">${w.label}</div><div class="wexample">${w.example} — <span style="font-size:12px;color:#666">${w.meaning}</span></div></div>`).join('')}</div>
+  <div style="font-size:12px;font-weight:500;color:#993C1D;margin:10px 0 6px">Tableau de dérivation :</div>
+  <table class="deriv-table"><thead><tr><th>Forme arabe</th><th>Schème (وزن)</th><th>Type</th><th>Traduction</th></tr></thead><tbody>${t.derivTable.map(r=>`<tr><td class="ar-cell">${r.forme}</td><td class="ar-cell" style="font-size:14px;color:#993C1D">${r.schème}</td><td style="font-size:12px">${r.type}</td><td style="font-size:12px;color:#666">${r.fr}</td></tr>`).join('')}</tbody></table></div>
+  <div class="gscore-row"><span style="font-size:12px;color:#666">Exercices morphologie :</span><span class="gsbadge morph" id="msbg">${mSc}/${mTot} — Q.${mExI+1}/${t.exercises.length}</span></div>
+  <div id="mExArea">${renderMEx(t,t.exercises[mExI])}</div>`;
+}
+function renderMEx(t,ex){if(!ex)return`<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : ${mSc}/${mTot} <button class="next-btn" onclick="resetM()">Recommencer</button></div>`;return`<div class="g-ex"><h4>Question morphologie ${mExI+1}/${t.exercises.length}</h4><div class="g-q">${ex.q}</div><div class="g-opts">${ex.opts.map(o=>`<button class="g-opt" onclick="checkM(this,'${o.replace(/'/g,"&#39;").replace(/"/g,'&quot;')}')">${o}</button>`).join('')}</div><div class="g-fb" id="mfb"></div></div>`;}
+function selMTop(i){mTop=i;mExI=0;mSc=0;mTot=0;renderMorpho();}
+function resetM(){mExI=0;mSc=0;mTot=0;renderMorpho();}
+function selectWazn(i){document.querySelectorAll('.wazn-card').forEach((c,j)=>c.classList.toggle('wsel',j===i));}
+function checkM(btn,ans){
+  const t=LEVELS[cLvl].morpho[mTop],ex=t.exercises[mExI];
+  document.querySelectorAll('#morpho .g-opt').forEach(b=>b.disabled=true);mTot++;
+  if(ans===ex.answer){btn.classList.add('correct');mSc++;document.getElementById('mfb').innerHTML=`<span style="color:#3B6D11">✓ ${ex.explain}</span>`;}
+  else{btn.classList.add('wrong');document.querySelectorAll('#morpho .g-opt').forEach(b=>{if(b.textContent===ex.answer)b.classList.add('correct');});document.getElementById('mfb').innerHTML=`<span style="color:#A32D2D">✗ ${ex.explain}</span>`;}
+  document.getElementById('msbg').textContent=`${mSc}/${mTot} — Q.${mExI+1}/${t.exercises.length}`;
+  setTimeout(()=>{mExI++;if(mExI>=t.exercises.length){document.getElementById('mExArea').innerHTML=`<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : ${mSc}/${mTot} <button class="next-btn" onclick="resetM()">Recommencer</button></div>`;return;}renderMorpho();},1500);
+}
+function renderQuiz(){
+  const el=document.getElementById('quiz');
+  el.innerHTML=`<div class="qscore"><div class="qsi"><span class="qsn" id="qsC">0</span>Correct</div><div class="qsi"><span class="qsn" id="qsT">0</span>Total</div><div class="qsi"><span class="qsn" id="qsP">—</span>Score</div><div class="qsi"><span class="qsn">${LEVELS[cLvl].unlockScore||'—'}%</span>Seuil</div></div><div class="qcard"><div class="qq" id="qQ" style="direction:rtl;font-size:21px"></div><div class="qopts" id="qO"></div></div><p style="text-align:center;font-size:12px;color:#666;margin-top:.35rem" id="qFB"></p>`;
+  nextQ();
+}
+function nextQ(){
+  const v=LEVELS[cLvl].vocab,i=Math.floor(Math.random()*v.length),c=v[i];
+  curAns=c.fr;const q=document.getElementById('qQ');if(q)q.textContent=c.ar;
+  const pool=v.filter((_,j)=>j!==i).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.fr);
+  const opts=[c.fr,...pool].sort(()=>Math.random()-.5);
+  const o=document.getElementById('qO');if(o)o.innerHTML=opts.map(op=>`<button class="qopt" onclick="checkQ(this,'${op.replace(/'/g,"&#39;")}')">${op}</button>`).join('');
+  const f=document.getElementById('qFB');if(f)f.textContent='';
+}
+function checkQ(btn,ans){
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);qT++;
+  if(ans===curAns){btn.classList.add('correct');qC++; document.getElementById('qFB').textContent='✓ Bravo !';}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt').forEach(b=>{if(b.textContent===curAns)b.classList.add('correct');});document.getElementById('qFB').textContent='✗ Réponse : '+curAns;}
+  const p=Math.round(qC/qT*100);document.getElementById('qsC').textContent=qC;document.getElementById('qsT').textContent=qT;document.getElementById('qsP').textContent=p+'%';
+  scores[cLvl]=p;save();renderLevelHeader();
+  const nd=LEVELS[cLvl].unlockScore,nx=cLvl+1;
+  if(nd&&p>=nd&&nx<LEVELS.length&&!unlocked[nx]&&qT>=5){unlocked[nx]=true;save();setTimeout(()=>showToast('🎉 Niveau '+LEVELS[nx].name+' débloqué !'),200);setTimeout(renderLevelBar,300);}
+  setTimeout(nextQ,1400);
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+
+renderLevelBar();renderLevelHeader();renderAlphabet();
+</script>
+</body>
+</html>
