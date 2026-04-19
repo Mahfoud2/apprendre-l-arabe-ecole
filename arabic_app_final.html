@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>تعلم العربية — Apprendre l'arabe</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+.app{max-width:980px;margin:0 auto;padding:1rem}
+.header{text-align:center;padding:.6rem 0}
+.arabic-title{font-size:26px;color:#7F77DD;direction:rtl;letter-spacing:3px}
+.header h1{font-size:18px;font-weight:500;color:#1a1a1a;margin-top:3px}
+.level-bar{display:flex;gap:5px;margin-bottom:.9rem;overflow-x:auto;padding-bottom:2px}
+.lvl-btn{flex:1;min-width:88px;padding:8px 5px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;text-align:center;transition:all .15s;position:relative}
+.lvl-btn .li{font-size:15px;display:block}
+.lvl-btn .ln{font-size:11px;font-weight:500;color:#666;margin-top:2px}
+.lvl-btn .ll{font-size:10px;color:#999}
+.lvl-btn.active{border-color:#7F77DD;background:#EEEDFE}
+.lvl-btn.active .ln{color:#534AB7}
+.lvl-btn.locked{opacity:.4;cursor:not-allowed}
+.lico{position:absolute;top:4px;right:5px;font-size:10px}
+.bn{position:absolute;bottom:3px;right:3px;font-size:9px;background:#FAC775;color:#633806;border-radius:5px;padding:1px 4px}
+.lhdr{background:#fff;border-radius:12px;border:1px solid #eee;padding:.85rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.85rem;flex-wrap:wrap}
+.lbadge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.linfo h2{font-size:14px;font-weight:500}
+.linfo p{font-size:12px;color:#666;margin-top:1px}
+.lprog{margin-left:auto;text-align:right}
+.lprog .pct{font-size:17px;font-weight:500;color:#7F77DD}
+.lprog .pctlbl{font-size:10px;color:#999}
+.pbsm{height:4px;background:#eee;border-radius:2px;margin-top:3px;overflow:hidden;min-width:90px}
+.pfsm{height:100%;background:#7F77DD;transition:width .3s}
+.nav{display:flex;gap:4px;margin-bottom:.85rem;flex-wrap:wrap}
+.nav-btn{padding:6px 12px;border-radius:16px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;color:#666}
+.nav-btn.active{background:#7F77DD;border-color:#7F77DD;color:white}
+.section{display:none}.section.active{display:block}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px;margin-bottom:.85rem}
+.lcard{background:#fff;border:1px solid #eee;border-radius:12px;padding:9px 5px;text-align:center;cursor:pointer;transition:all .15s}
+.lcard:hover,.lcard.sel{border-color:#AFA9EC;background:#EEEDFE}
+.lar{font-size:27px;direction:rtl;line-height:1.2}
+.lnm{font-size:10px;color:#999;margin-top:2px}
+.ldet{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.85rem}
+.fbadge{background:#EEEDFE;color:#534AB7;border-radius:8px;padding:3px 8px;font-size:15px;direction:rtl}
+.fcwrap{perspective:800px;margin:0 auto .85rem;max-width:370px;height:185px;cursor:pointer}
+.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;border-radius:12px}
+.fc.flipped{transform:rotateY(180deg)}
+.cface{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid #eee;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem}
+.cfront{background:#fff}.cback{background:#EEEDFE;transform:rotateY(180deg)}
+.cword{font-size:31px;direction:rtl;margin-bottom:5px}
+.chint{font-size:11px;color:#999}
+.ctrans{font-size:18px;font-weight:500;color:#534AB7}
+.fcc{display:flex;gap:6px;justify-content:center;margin-bottom:.85rem;flex-wrap:wrap}
+.fcc button{padding:6px 15px;border-radius:16px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;color:#666}
+.bknown{background:#EAF3DE!important;border-color:#639922!important;color:#3B6D11!important}
+.bunknown{background:#FCEBEB!important;border-color:#E24B4A!important;color:#A32D2D!important}
+.pb{height:4px;background:#eee;border-radius:2px;margin-bottom:.4rem;overflow:hidden}
+.pf{height:100%;background:#7F77DD;transition:width .3s}
+.mod-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.85rem}
+.mtab{padding:5px 11px;border-radius:13px;border:1px solid #ddd;background:#fff;font-size:11px;cursor:pointer;color:#666;transition:all .15s}
+.mtab.active{background:#534AB7;border-color:#534AB7;color:white}
+.mtab.active.morpho{background:#D85A30;border-color:#D85A30}
+.lesson-box{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.85rem}
+.lesson-box h3{font-size:14px;font-weight:500;margin-bottom:.55rem}
+.rule-box{background:#EEEDFE;border-radius:8px;padding:.65rem .9rem;margin-bottom:.65rem;font-size:13px;color:#3C3489;border-left:3px solid #7F77DD;line-height:1.6}
+.rule-box.morpho-rule{background:#FAECE7;color:#4A1B0C;border-left-color:#D85A30}
+.ex-row{display:flex;align-items:center;gap:.65rem;padding:.35rem 0;border-bottom:1px solid #f0f0f0;flex-wrap:wrap}
+.ex-row:last-child{border-bottom:none}
+.ex-ar{font-size:19px;direction:rtl;min-width:95px}
+.ex-tr{font-size:12px;color:#7F77DD;min-width:75px}
+.ex-fr{font-size:13px;color:#666}
+/* Quranic text box */
+.quran-box{background:linear-gradient(135deg,#f8f4ff,#fff);border:1px solid #AFA9EC;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.85rem;position:relative}
+.quran-box .qb-badge{display:inline-block;font-size:10px;background:#7F77DD;color:white;border-radius:8px;padding:2px 8px;margin-bottom:.5rem}
+.quran-box .qb-badge.hadith{background:#1D9E75}
+.quran-box .qb-text{font-size:20px;direction:rtl;line-height:2;color:#1a1a1a;text-align:right;margin-bottom:.5rem}
+.quran-box .qb-ref{font-size:11px;color:#7F77DD;text-align:right}
+.quran-box .qb-trans{font-size:13px;color:#666;font-style:italic;margin-top:.4rem;line-height:1.5}
+.highlight{background:#FAC775;border-radius:3px;padding:0 3px;color:#633806;font-weight:500}
+.g-ex{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.65rem}
+.g-ex h4{font-size:13px;font-weight:500;margin-bottom:.65rem}
+.g-q{font-size:14px;margin-bottom:.65rem;line-height:1.6;color:#1a1a1a}
+.g-q .ar{direction:rtl;font-size:18px;display:block;margin:.4rem 0;color:#3C3489}
+.g-opts{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.4rem}
+.g-opt{padding:5px 13px;border-radius:13px;border:1px solid #ddd;background:#f5f5f0;cursor:pointer;font-size:13px;transition:all .15s;color:#1a1a1a}
+.g-opt:hover:not(:disabled){background:#EEEDFE;border-color:#AFA9EC}
+.g-opt.correct{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+.g-opt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.g-fb{font-size:12px;margin-top:.35rem;min-height:15px;color:#666;line-height:1.5}
+.gscore-row{display:flex;gap:7px;align-items:center;margin-bottom:.65rem;flex-wrap:wrap}
+.gsbadge{border-radius:11px;padding:3px 11px;font-size:12px;font-weight:500}
+.gsbadge.gram{background:#EEEDFE;color:#534AB7}
+.gsbadge.morph{background:#FAECE7;color:#993C1D}
+.next-btn{padding:5px 14px;border-radius:14px;border:1px solid #7F77DD;background:white;color:#534AB7;font-size:12px;cursor:pointer}
+.root-display{text-align:center;margin-bottom:1rem}
+.root-letters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.root-letter{width:52px;height:52px;border-radius:12px;border:2px solid #D85A30;background:#FAECE7;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.root-letter .rl-ar{font-size:24px;color:#993C1D;direction:rtl}
+.root-letter .rl-num{font-size:10px;color:#BA7517}
+.wazn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin:10px 0}
+.wazn-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:.65rem .85rem;cursor:pointer;transition:all .15s}
+.wazn-card:hover,.wazn-card.wsel{border-color:#F0997B;background:#FAECE7}
+.wazn-card .wpattern{font-size:18px;direction:rtl;color:#993C1D;font-weight:500}
+.wazn-card .wlabel{font-size:11px;color:#999;margin-top:2px}
+.wazn-card .wexample{font-size:14px;direction:rtl;margin-top:3px}
+.deriv-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}
+.deriv-table th{background:#FAECE7;color:#993C1D;padding:5px 8px;font-weight:500;text-align:center;border:1px solid #F0997B}
+.deriv-table td{padding:5px 8px;border:1px solid #eee;text-align:center}
+.deriv-table td.ar-cell{font-size:17px;direction:rtl;color:#3C3489}
+.deriv-table tr:hover td{background:#fafafa}
+.qscore{display:flex;gap:6px;margin-bottom:.85rem}
+.qsi{background:#f5f5f0;border-radius:8px;padding:6px;font-size:11px;color:#666;flex:1;text-align:center}
+.qsn{font-size:16px;font-weight:500;color:#1a1a1a;display:block}
+.qcard{background:#fff;border-radius:12px;border:1px solid #eee;padding:1rem;margin-bottom:.65rem}
+.qq{font-size:20px;text-align:center;margin-bottom:1rem}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.qopt{padding:8px;border-radius:8px;border:1px solid #ddd;background:#f5f5f0;cursor:pointer;font-size:13px;text-align:center;transition:all .15s}
+.qopt:hover:not(:disabled){border-color:#AFA9EC;background:#EEEDFE}
+.qopt.correct{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+.qopt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.lockoverlay{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #eee}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(100px);background:#534AB7;color:white;padding:9px 20px;border-radius:16px;font-size:13px;transition:transform .4s;z-index:99;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="arabic-title">تعلم العربية</div>
+    <h1>Apprentissage de l'arabe — 5 niveaux</h1>
+  </div>
+  <div class="level-bar" id="levelBar"></div>
+  <div class="lhdr" id="levelHeader"></div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showSection('alphabet',this)">🔤 Alphabet</button>
+    <button class="nav-btn" onclick="showSection('vocab',this)">📚 Vocabulaire</button>
+    <button class="nav-btn" onclick="showSection('grammar',this)">📝 Grammaire</button>
+    <button class="nav-btn" onclick="showSection('morpho',this)">🔬 Morphologie</button>
+    <button class="nav-btn" onclick="showSection('quiz',this)">✏️ Quiz</button>
+  </nav>
+  <div class="section active" id="alphabet"></div>
+  <div class="section" id="vocab"></div>
+  <div class="section" id="grammar"></div>
+  <div class="section" id="morpho"></div>
+  <div class="section" id="quiz"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const LEVELS=[
+{id:0,name:'Débutant',label:'Niveau 1',icon:'🌱',color:'#1D9E75',bg:'#E1F5EE',desc:'Alphabet, salutations, premiers mots',unlockScore:80,
+alphabet:[{ar:'ا',name:'Alif',trans:'a',forms:['أ','إ','آ']},{ar:'ب',name:'Ba',trans:'b',forms:['بـ','ـبـ','ـب']},{ar:'ت',name:'Ta',trans:'t',forms:['تـ','ـتـ','ـت']},{ar:'ج',name:'Jim',trans:'dj',forms:['جـ','ـجـ','ـج']},{ar:'د',name:'Dal',trans:'d',forms:['ـد']},{ar:'ر',name:'Ra',trans:'r',forms:['ـر']},{ar:'س',name:'Sin',trans:'s',forms:['سـ','ـسـ','ـس']},{ar:'م',name:'Mim',trans:'m',forms:['مـ','ـمـ','ـم']},{ar:'ن',name:'Nun',trans:'n',forms:['نـ','ـنـ','ـن']},{ar:'و',name:'Waw',trans:'w',forms:['ـو']}],
+vocab:[{ar:'مرحبا',fr:'Bonjour'},{ar:'شكرا',fr:'Merci'},{ar:'نعم',fr:'Oui'},{ar:'لا',fr:'Non'},{ar:'أنا',fr:'Je / Moi'},{ar:'ماء',fr:'Eau'},{ar:'خبز',fr:'Pain'},{ar:'واحد',fr:'Un'},{ar:'اثنان',fr:'Deux'},{ar:'ثلاثة',fr:'Trois'}],
+grammar:[
+{title:"L'article défini ال",rule:"ال (al-) est l'article défini unique en arabe. Il se place avant le nom. Un nom sans article est indéfini. La lune (الشمسية) ou le soleil (القمرية) influencent la prononciation du ل.",
+examples:[{ar:'رَبٌّ',trans:'rabb',fr:'un seigneur (indéfini)'},{ar:'الرَّبُّ',trans:'ar-rabb',fr:'le Seigneur (défini)'},{ar:'كِتَابٌ',trans:'kitāb',fr:'un livre'},{ar:'الكِتَابُ',trans:'al-kitāb',fr:'le livre'}],
+quranRef:{type:'quran',text:'بِسْمِ اللهِ الرَّحْمَٰنِ الرَّحِيمِ',ref:'Sourate Al-Fatiha, 1:1',trans:'Au nom de Dieu, le Tout Miséricordieux, le Très Miséricordieux',highlight:'الرَّحْمَٰنِ الرَّحِيمِ',highlightNote:'Les deux noms portent ال → noms définis'},
+exercises:[
+{q:'Dans بِسْمِ اللهِ, quel mot porte l\'article ال ?',ar:'بِسْمِ اللهِ',opts:['بِسْمِ','اللهِ','بِ','ال'],answer:'اللهِ',explain:'اللَّه porte ال → "le Dieu" = Dieu (défini)'},
+{q:'Ajoute ال devant رَبٌّ (seigneur) :',ar:'',opts:['الرَّبُّ','رَبُّال','رَبٌّ','الاربّ'],answer:'الرَّبُّ',explain:'Al + rabb = الرَّبُّ'},
+{q:'Dans الرَّحْمَٰنِ, le ال indique que ce nom est… ?',ar:'الرَّحْمَٰنِ',opts:['indéfini','défini','pluriel','féminin'],answer:'défini',explain:'ال = article défini → "le Tout Miséricordieux"'}
+]},
+{title:'Genre : masculin et féminin',rule:'Le féminin porte souvent ة (ta marbuta). Les noms divins et les adjectifs s\'accordent. Certains noms féminins n\'ont pas de ة (ex: أرض = terre, نار = feu).',
+examples:[{ar:'مُؤْمِنٌ',trans:'muʾmin',fr:'croyant (masc.)'},{ar:'مُؤْمِنَةٌ',trans:'muʾmina',fr:'croyante (fém.)'},{ar:'رَحْمَةٌ',trans:'raḥma',fr:'miséricorde (fém.)'},{ar:'نَارٌ',trans:'nār',fr:'feu (fém. sans ة)'}],
+quranRef:{type:'quran',text:'وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ',ref:'Sourate Al-Aʿrāf, 7:156',trans:'Et Ma miséricorde embrasse toute chose',highlight:'رَحْمَتِي',highlightNote:'رحمة porte ة → féminin'},
+exercises:[
+{q:'رَحْمَةٌ (miséricorde) est féminin car… ?',ar:'رَحْمَةٌ',opts:['il porte ة','il est court','il est défini','il est pluriel'],answer:'il porte ة',explain:'La ta marbuta ة est la marque du féminin'},
+{q:'Quel mot est féminin ?',ar:'',opts:['كِتَابٌ','مُؤْمِنٌ','رَحْمَةٌ','رَبٌّ'],answer:'رَحْمَةٌ',explain:'رحمة porte ة → féminin'},
+{q:'Forme le féminin de مُؤْمِنٌ (croyant) :',ar:'',opts:['مُؤْمِنَةٌ','مُؤْمِنِي','مُؤْمِنُون','مَؤْمَن'],answer:'مُؤْمِنَةٌ',explain:'On ajoute ة → مُؤْمِنَة'}
+]},
+{title:'La phrase à préposition : حرف الجر',rule:'Les prépositions (حروف الجر) les plus courantes : بِ (par/avec/au nom de), لِ (pour/à), فِي (dans), عَلَى (sur), مِن (de), إِلَى (vers). Elles mettent le nom suivant au génitif (ـِ).',
+examples:[{ar:'بِسْمِ اللهِ',trans:'bismi-llāh',fr:'au nom de Dieu'},{ar:'لِلَّهِ',trans:'li-llāh',fr:'pour Dieu / à Dieu'},{ar:'فِي السَّمَاءِ',trans:'fi s-samāʾ',fr:'dans le ciel'},{ar:'مِنَ اللهِ',trans:'mina-llāh',fr:'de Dieu'}],
+quranRef:{type:'hadith',text:'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ',ref:'Hadith, Sahih al-Bukhari n°1',trans:'Les actes ne valent que par les intentions',highlight:'بِالنِّيَّاتِ',highlightNote:'بِ = préposition "par/avec", النيات = les intentions (génitif)'},
+exercises:[
+{q:'Dans بِسْمِ اللهِ, بِ est une… ?',ar:'بِسْمِ اللهِ',opts:['préposition','pronom','verbe','article'],answer:'préposition',explain:'بِ = "au nom de / par", c\'est une préposition (حرف جر)'},
+{q:'Dans بِالنِّيَّاتِ, la préposition بِ signifie ?',ar:'بِالنِّيَّاتِ',opts:['dans','vers','par/avec','de'],answer:'par/avec',explain:'بِ = par/avec → "par les intentions"'},
+{q:'Quelle préposition signifie "dans" ?',ar:'',opts:['بِ','لِ','فِي','مِن'],answer:'فِي',explain:'فِي = dans → فِي السَّمَاء = dans le ciel'}
+]},
+{title:'Le nom indéfini et le tanwīn',rule:'En arabe, le tanwīn (تنوين) est la double voyelle finale (ـٌ, ـً, ـٍ) qui marque l\'indétermination. ـٌ = nominatif, ـً = accusatif, ـٍ = génitif indéfini. Il n\'y a pas de mot "un/une" en arabe.',
+examples:[{ar:'رَجُلٌ',trans:'rajulun',fr:'un homme (nominatif indef.)'},{ar:'رَجُلاً',trans:'rajulan',fr:'un homme (accusatif indef.)'},{ar:'رَجُلٍ',trans:'rajulin',fr:'d\'un homme (génitif indef.)'},{ar:'كُلَّ شَيْءٍ',trans:'kulla shayʾin',fr:'toute chose (génitif indef.)'}],
+quranRef:{type:'quran',text:'وَخَلَقْنَا كُلَّ شَيْءٍ مِّن مَّاءٍ',ref:'Sourate Al-Anbiyāʾ, 21:30',trans:'Et Nous avons créé toute chose à partir de l\'eau',highlight:'شَيْءٍ مَّاءٍ',highlightNote:'شيءٍ et ماءٍ portent ـٍ = génitif indéfini'},
+exercises:[
+{q:'شَيْءٍ porte ـٍ, ce qui indique… ?',ar:'وَخَلَقْنَا كُلَّ شَيْءٍ',opts:['défini','génitif indéfini','nominatif','pluriel'],answer:'génitif indéfini',explain:'ـٍ = tanwīn kasra = génitif indéfini'},
+{q:'Comment rendre رَجُلٌ indéfini à l\'accusatif ?',ar:'',opts:['رَجُلٌ','رَجُلاً','الرَّجُلُ','رَجُلٍ'],answer:'رَجُلاً',explain:'ـً = tanwīn fatḥa = accusatif indéfini'},
+{q:'Le tanwīn sert à marquer… ?',ar:'',opts:['le féminin','le pluriel','l\'indétermination','le verbe'],answer:'l\'indétermination',explain:'Les doubles voyelles finales (ـٌ ـً ـٍ) = tanwīn = indéfini'}
+]},
+{title:'L\'annexion : الإضافة',rule:'L\'idafa (إضافة) est la construction possessive. On juxtapose deux noms : le premier (مضاف) perd son tanwīn, le second (مضاف إليه) se met au génitif. Traduit par "de" en français.',
+examples:[{ar:'كِتَابُ اللهِ',trans:'kitābu-llāh',fr:'le Livre de Dieu'},{ar:'رَسُولُ اللهِ',trans:'rasūlu-llāh',fr:'le Messager de Dieu'},{ar:'بَيْتُ الرَّجُلِ',trans:'baytu r-rajul',fr:'la maison de l\'homme'},{ar:'نُورُ السَّمَاءِ',trans:'nūru s-samāʾ',fr:'la lumière du ciel'}],
+quranRef:{type:'quran',text:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',ref:'Sourate Al-Fatiha, 1:2',trans:'Louange à Dieu, Seigneur des mondes',highlight:'رَبِّ الْعَالَمِينَ',highlightNote:'رَبِّ الْعَالَمِينَ = annexion : "Seigneur des mondes"'},
+exercises:[
+{q:'Dans رَبِّ الْعَالَمِينَ, il s\'agit d\'une… ?',ar:'رَبِّ الْعَالَمِينَ',opts:['phrase verbale','annexion (إضافة)','pronom','article'],answer:'annexion (إضافة)',explain:'رَبِّ + الْعَالَمِينَ = idafa : "Seigneur des mondes"'},
+{q:'Dans رَسُولُ اللهِ, le second nom اللهِ est au… ?',ar:'رَسُولُ اللهِ',opts:['nominatif','accusatif','génitif','indéfini'],answer:'génitif',explain:'Le second terme de l\'idafa est toujours au génitif'},
+{q:'Traduis كِتَابُ اللهِ :',ar:'كِتَابُ اللهِ',opts:['un livre de Dieu','le Livre de Dieu','Dieu et le livre','le livre avec Dieu'],answer:'le Livre de Dieu',explain:'idafa = construction possessive → "le Livre de Dieu"'}
+]}
+],
+morpho:[
+{title:'Introduction aux racines trilitères',rule:'Presque tous les mots arabes dérivent d\'une racine de 3 consonnes (جذر). Ces 3 consonnes portent un sens de base. On applique des schèmes (وزن) pour créer des mots différents.',
+rootExample:{root:['ك','ت','ب'],meaning:'idée d\'écriture'},
+quranRef:{type:'quran',text:'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ ﴿١﴾ خَلَقَ الْإِنسَانَ مِنْ عَلَقٍ ﴿٢﴾ اقْرَأْ وَرَبُّكَ الْأَكْرَمُ ﴿٣﴾ الَّذِي عَلَّمَ بِالْقَلَمِ',ref:'Sourate Al-ʿAlaq, 96:1-4',trans:'Lis au nom de ton Seigneur qui a créé... qui a enseigné par la plume',highlight:'عَلَّمَ بِالْقَلَمِ',highlightNote:'عَلَّمَ (ع-ل-م) et القَلَم (ق-ل-م) : deux racines trilitères'},
+waznGrid:[{pattern:'فَعَلَ',label:'Verbe passé',example:'كَتَبَ',meaning:'il a écrit'},{pattern:'فَاعِل',label:'Agent',example:'كَاتِب',meaning:'écrivain'},{pattern:'مَفعُول',label:'Passif',example:'مَكتُوب',meaning:'écrit'},{pattern:'فِعَال',label:'Nom',example:'كِتَاب',meaning:'livre'},{pattern:'مَفعَل',label:'Lieu',example:'مَكتَب',meaning:'bureau'}],
+derivTable:[{forme:'كَتَبَ',schème:'فَعَلَ',type:'Verbe passé',fr:'il a écrit'},{forme:'يَكتُبُ',schème:'يَفعُلُ',type:'Présent',fr:'il écrit'},{forme:'كِتَاب',schème:'فِعَال',type:'Nom',fr:'livre'},{forme:'كَاتِب',schème:'فَاعِل',type:'Agent',fr:'écrivain'},{forme:'مَكتُوب',schème:'مَفعُول',type:'Passif',fr:'écrit'},{forme:'مَكتَب',schème:'مَفعَل',type:'Lieu',fr:'bureau'}],
+exercises:[
+{q:'Dans عَلَّمَ بِالْقَلَمِ (il a enseigné par la plume), quelle est la racine de عَلَّمَ ?',ar:'عَلَّمَ بِالْقَلَمِ',opts:['ع-ل-م','ع-م-ل','ل-م-ع','م-ع-ل'],answer:'ع-ل-م',explain:'ع-ل-م = savoir/connaissance. عَلَّمَ = il a enseigné (Forme II causative)'},
+{q:'Racine de كِتَاب (livre) dans الْقَلَمِ (la plume) — quelle est la racine de القَلَم ?',ar:'الْقَلَمِ',opts:['ق-ل-م','ق-م-ل','ك-ت-ب','ل-ق-م'],answer:'ق-ل-م',explain:'ق-ل-م = écrire avec une plume. Le ال est l\'article, la racine est ق-ل-م'},
+{q:'Le schème فَاعِل appliqué à ك-ت-ب donne ?',ar:'',opts:['كِتَاب','كَاتِب','مَكتُوب','مَكتَب'],answer:'كَاتِب',explain:'فَاعِل = agent/participe actif → كاتب = écrivain'}
+]},
+{title:'Racine ر-ح-م : la miséricorde',rule:'La racine ر-ح-م est l\'une des plus importantes du Coran. Elle exprime la miséricorde divine sous toutes ses formes. On la retrouve dans la Basmala récitée au début de chaque sourate.',
+rootExample:{root:['ر','ح','م'],meaning:'miséricorde / compassion'},
+quranRef:{type:'quran',text:'بِسْمِ اللهِ الرَّحْمَٰنِ الرَّحِيمِ',ref:'La Basmala — début de chaque sourate',trans:'Au nom de Dieu, le Tout Miséricordieux, le Très Miséricordieux',highlight:'الرَّحْمَٰنِ الرَّحِيمِ',highlightNote:'Deux schèmes différents sur la même racine ر-ح-م'},
+waznGrid:[{pattern:'فَعِلَ',label:'Verbe de base',example:'رَحِمَ',meaning:'il a eu pitié'},{pattern:'فَعلَة',label:'Nom abstrait',example:'رَحْمَة',meaning:'miséricorde'},{pattern:'فَعِيل',label:'Qualité intense',example:'رَحِيم',meaning:'très miséricordieux'},{pattern:'فَعلَان',label:'Superlatif',example:'رَحمَان',meaning:'Tout-Miséricordieux'},{pattern:'مَفعُول',label:'Passif',example:'مَرحُوم',meaning:'béni/regretté'}],
+derivTable:[{forme:'رَحِمَ',schème:'فَعِلَ',type:'Verbe',fr:'avoir pitié'},{forme:'رَحْمَة',schème:'فَعلَة',type:'Nom',fr:'miséricorde'},{forme:'رَحِيم',schème:'فَعِيل',type:'Adj. intense',fr:'miséricordieux'},{forme:'رَحمَان',schème:'فَعلَان',type:'Superlatif',fr:'Tout-Miséricordieux'},{forme:'مَرحُوم',schème:'مَفعُول',type:'Passif',fr:'béni/regretté'}],
+exercises:[
+{q:'الرَّحمَان et الرَّحِيم viennent tous deux de la racine… ?',ar:'الرَّحْمَٰنِ الرَّحِيمِ',opts:['ر-ح-ب','ر-ح-م','ح-ر-م','ر-م-ح'],answer:'ر-ح-م',explain:'ر-ح-م = miséricorde. Les deux noms divins partagent la même racine avec des schèmes différents'},
+{q:'رَحِيم suit le schème فَعِيل qui exprime… ?',ar:'رَحِيم',opts:['un lieu','une action','une qualité intense','un passif'],answer:'une qualité intense',explain:'فَعِيل = qualité intense → رحيم = "extrêmement miséricordieux"'},
+{q:'Quelle forme nominale signifie "la miséricorde" (concept abstrait) ?',ar:'',opts:['رَحِيم','رَحمَان','رَحْمَة','مَرحُوم'],answer:'رَحْمَة',explain:'فَعلَة = nom abstrait → رحمة = la miséricorde comme concept'}
+]}
+]},
+
+{id:1,name:'Élémentaire',label:'Niveau 2',icon:'📖',color:'#378ADD',bg:'#E6F1FB',desc:'Pronoms, verbes simples, famille',unlockScore:80,
+alphabet:[{ar:'ح',name:'Ha',trans:'ḥ',forms:['حـ','ـحـ','ـح']},{ar:'خ',name:'Kha',trans:'kh',forms:['خـ','ـخـ','ـخ']},{ar:'ز',name:'Zay',trans:'z',forms:['ـز']},{ar:'ش',name:'Shin',trans:'sh',forms:['شـ','ـشـ','ـش']},{ar:'ع',name:'Ayn',trans:'ʿ',forms:['عـ','ـعـ','ـع']},{ar:'ف',name:'Fa',trans:'f',forms:['فـ','ـفـ','ـف']},{ar:'ك',name:'Kaf',trans:'k',forms:['كـ','ـكـ','ـك']},{ar:'ل',name:'Lam',trans:'l',forms:['لـ','ـلـ','ـل']},{ar:'ي',name:'Ya',trans:'y',forms:['يـ','ـيـ','ـي']}],
+vocab:[{ar:'أنت',fr:'Tu (masc.)'},{ar:'هو',fr:'Il'},{ar:'هي',fr:'Elle'},{ar:'أب',fr:'Père'},{ar:'أم',fr:'Mère'},{ar:'أخ',fr:'Frère'},{ar:'ذهب',fr:'Il est allé'},{ar:'أكل',fr:'Il a mangé'},{ar:'كتب',fr:'Il a écrit'},{ar:'بيت',fr:'Maison'}],
+grammar:[
+{title:'Les pronoms personnels',rule:'Les pronoms varient selon genre et nombre. En arabe classique ils sont souvent omis car la conjugaison suffit à identifier le sujet.',
+examples:[{ar:'أنا',trans:'anā',fr:'je'},{ar:'أنتَ',trans:'anta',fr:'tu (m.)'},{ar:'أنتِ',trans:'anti',fr:'tu (f.)'},{ar:'هو',trans:'huwa',fr:'il'},{ar:'هي',trans:'hiya',fr:'elle'},{ar:'نحن',trans:'naḥnu',fr:'nous'}],
+quranRef:{type:'quran',text:'إِنَّنِي أَنَا اللَّهُ لَا إِلَٰهَ إِلَّا أَنَا فَاعْبُدْنِي',ref:'Sourate Ṭāhā, 20:14',trans:'Certes, Moi, Je suis Dieu, point de divinité que Moi, adore-Moi',highlight:'أَنَا اللَّهُ ... أَنَا',highlightNote:'أنا = pronom "Je/Moi", utilisé ici pour insistance divine'},
+exercises:[
+{q:'Dans إِنَّنِي أَنَا اللَّهُ, أَنَا est le pronom de… ?',ar:'إِنَّنِي أَنَا اللَّهُ',opts:['2e personne','1re personne','3e personne masc.','3e personne fém.'],answer:'1re personne',explain:'أَنَا = anā = "Je/Moi", 1re personne du singulier'},
+{q:'"Elle" se dit… ?',ar:'',opts:['هو','أنا','هي','أنتَ'],answer:'هي',explain:'هي = hiya = elle (3e pers. fém. sing.)'},
+{q:'Quel pronom emploierait une femme pour dire "je" ?',ar:'',opts:['هي','أنتِ','أنا','نحن'],answer:'أنا',explain:'أنا est invariable : utilisé par homme et femme'}
+]},
+{title:'Le verbe au passé',rule:'Le passé (فعل ماضي) se conjugue en ajoutant des suffixes à la racine. La forme de base (3e masc. sing.) est la forme du dictionnaire. Les suffixes : ـتُ (je), ـتَ (tu m.), ـتِ (tu f.), ـنَا (nous).',
+examples:[{ar:'ذَهَبَ',trans:'dhahaba',fr:'il est allé'},{ar:'ذَهَبَت',trans:'dhahabat',fr:'elle est allée'},{ar:'ذَهَبتُ',trans:'dhahabtu',fr:'je suis allé(e)'},{ar:'ذَهَبنَا',trans:'dhahabnā',fr:'nous sommes allé(e)s'}],
+quranRef:{type:'quran',text:'وَخَلَقَ اللَّهُ السَّمَاوَاتِ وَالْأَرْضَ بِالْحَقِّ',ref:'Sourate An-Naḥl, 16:3',trans:'Et Dieu a créé les cieux et la terre en toute vérité',highlight:'خَلَقَ',highlightNote:'خَلَقَ = passé 3e masc. sing. de la racine خ-ل-ق'},
+exercises:[
+{q:'خَلَقَ dans وَخَلَقَ اللَّهُ est un verbe au… ?',ar:'وَخَلَقَ اللَّهُ',opts:['présent','passé 3e masc.','futur','impératif'],answer:'passé 3e masc.',explain:'خَلَقَ = kh-l-q au passé, 3e masc. sing. = "il a créé"'},
+{q:'Comment dire "je suis parti" à partir de ذَهَبَ ?',ar:'',opts:['ذَهَبتُ','ذَهَبتَ','ذَهَبَت','ذَهَبنَا'],answer:'ذَهَبتُ',explain:'Suffixe ـتُ = 1re pers. sing. → ذَهَبتُ = je suis allé(e)'},
+{q:'Le suffixe ـنَا indique… ?',ar:'',opts:['je','tu (m.)','elle','nous'],answer:'nous',explain:'ـنَا = suffixe de la 1re pers. pluriel = nous'}
+]},
+{title:'La négation : لا، لم، لن، ما',rule:'En arabe, la négation varie selon le temps. لا + présent = négation générale. لَم + apocopé = passé négatif. لَن + subjonctif = futur négatif. مَا + passé = passé négatif (style coranique).',
+examples:[{ar:'لَا إِلَٰهَ إِلَّا اللَّهُ',trans:'lā ilāha illa-llāh',fr:'Pas de divinité sauf Dieu'},{ar:'لَم يَلِد',trans:'lam yalid',fr:'Il n\'a pas engendré'},{ar:'لَن تَرَانِي',trans:'lan tarānī',fr:'Tu ne Me verras pas'},{ar:'مَا وَدَّعَكَ',trans:'mā waddaʿak',fr:'Il ne t\'a pas abandonné'}],
+quranRef:{type:'quran',text:'لَمْ يَلِدْ وَلَمْ يُولَدْ',ref:'Sourate Al-Ikhlāṣ, 112:3',trans:'Il n\'a pas engendré et n\'a pas été engendré',highlight:'لَمْ يَلِدْ لَمْ يُولَدْ',highlightNote:'لَم + verbe apocopé = passé négatif'},
+exercises:[
+{q:'Dans لَمْ يَلِدْ, لَم indique une négation au… ?',ar:'لَمْ يَلِدْ',opts:['présent','passé','futur','impératif'],answer:'passé',explain:'لَم + verbe apocopé = passé négatif : "il n\'a pas engendré"'},
+{q:'لَا إِلَٰهَ إِلَّا اللَّهُ — لا ici sert à… ?',ar:'لَا إِلَٰهَ إِلَّا اللَّهُ',opts:['poser une question','nier / exclure','donner un ordre','affirmer'],answer:'nier / exclure',explain:'لا النافية للجنس = "pas de … (en général)" → nie l\'existence de toute divinité'},
+{q:'لَن تَرَانِي signifie "tu ne Me verras pas". لَن indique une négation au… ?',ar:'لَن تَرَانِي',opts:['passé','présent','futur','état'],answer:'futur',explain:'لَن + subjonctif = futur négatif absolu'}
+]},
+{title:'La question : أدوات الاستفهام',rule:'Les particules interrogatives principales : هَل (est-ce que ?), مَن (qui ?), مَا / مَاذَا (quoi / que ?), أَيْن (où ?), كَيْف (comment ?), لِمَاذَا (pourquoi ?), كَم (combien ?).',
+examples:[{ar:'هَلْ أَتَاكَ',trans:'hal atāka',fr:'Est-ce que t\'est parvenu...?'},{ar:'مَن رَّبُّكَ',trans:'man rabbuka',fr:'Qui est ton Seigneur ?'},{ar:'مَا هَٰذَا',trans:'mā hādhā',fr:'Qu\'est-ce que ceci ?'},{ar:'كَيْفَ تَكْفُرُون',trans:'kayfa takfurūn',fr:'Comment pouvez-vous renier ?'}],
+quranRef:{type:'quran',text:'هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ',ref:'Sourate Al-Ghāshiya, 88:1',trans:'T\'est-il parvenu le récit du Jour Enveloppant ?',highlight:'هَلْ',highlightNote:'هَل = particule interrogative "est-ce que ?"'},
+exercises:[
+{q:'هَلْ dans هَلْ أَتَاكَ est une particule… ?',ar:'هَلْ أَتَاكَ',opts:['de négation','interrogative','de condition','de conjonction'],answer:'interrogative',explain:'هَل = "est-ce que ?", particule interrogative (أداة استفهام)'},
+{q:'Pour demander "qui ?", on utilise… ?',ar:'',opts:['مَا','أَيْن','مَن','كَيْف'],answer:'مَن',explain:'مَن = "qui ?" (pour les êtres humains)'},
+{q:'"Comment ?" se dit… ?',ar:'',opts:['كَم','لِمَاذَا','كَيْف','هَل'],answer:'كَيْف',explain:'كَيْف = "comment ?" → كَيْفَ تَكْفُرُون = comment pouvez-vous renier ?'}
+]},
+{title:'L\'adjectif et l\'accord',rule:'L\'adjectif suit le nom en genre, nombre et détermination. Si le nom est défini, l\'adjectif prend ال. Si le nom est féminin, l\'adjectif prend ة. Si le nom est pluriel non-humain, l\'adjectif est au féminin singulier.',
+examples:[{ar:'الصِّرَاطُ الْمُسْتَقِيمُ',trans:'aṣ-ṣirāṭu l-mustaqīm',fr:'le droit chemin'},{ar:'الْعَذَابُ الشَّدِيدُ',trans:'al-ʿadhābu sh-shadīd',fr:'le châtiment sévère'},{ar:'رِيحٌ شَدِيدَةٌ',trans:'rīḥun shadīda',fr:'un vent violent'},{ar:'الْأَسْمَاءُ الْحُسْنَى',trans:'al-asmāʾu l-ḥusnā',fr:'les plus beaux noms'}],
+quranRef:{type:'quran',text:'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',ref:'Sourate Al-Fatiha, 1:6',trans:'Guide-nous sur le droit chemin',highlight:'الصِّرَاطَ الْمُسْتَقِيمَ',highlightNote:'الصراط (défini masc.) → المستقيم s\'accorde : défini masc.'},
+exercises:[
+{q:'Dans الصِّرَاطَ الْمُسْتَقِيمَ, l\'adjectif porte ال car… ?',ar:'الصِّرَاطَ الْمُسْتَقِيمَ',opts:['le nom est pluriel','le nom est défini','le nom est féminin','le nom est au génitif'],answer:'le nom est défini',explain:'Si le nom porte ال, l\'adjectif porte aussi ال pour s\'accorder'},
+{q:'رِيحٌ (vent) est masc. indéfini. Comment accorde-t-on شَدِيد ?',ar:'',opts:['شَدِيدٌ','شَدِيدَةٌ','الشَّدِيدُ','شَدِيدا'],answer:'شَدِيدٌ',explain:'Nom masc. indéfini → adjectif masc. indéfini : شَدِيدٌ'},
+{q:'الأَسْمَاءُ الْحُسْنَى — الأسماء est pluriel non-humain. L\'adjectif الحُسنَى est au… ?',ar:'الأَسْمَاءُ الْحُسْنَى',opts:['masc. pluriel','féminin singulier','masc. singulier','féminin pluriel'],answer:'féminin singulier',explain:'Pluriel non-humain → adjectif au féminin singulier (règle classique)'}
+]}
+],
+morpho:[
+{title:'Les schèmes du verbe : الأوزان الفعلية',rule:'Le schème فَعَلَ est le plus courant au passé. La racine s\'identifie en repérant les 3 consonnes de base. ف = 1re consonne, ع = 2e, ل = 3e.',
+rootExample:{root:['ذ','ه','ب'],meaning:'idée d\'aller / partir'},
+quranRef:{type:'quran',text:'وَمَا تَشَاءُونَ إِلَّا أَن يَشَاءَ اللَّهُ',ref:'Sourate Al-Insān, 76:30',trans:'Et vous ne voulez que ce que Dieu veut',highlight:'تَشَاءُونَ يَشَاءَ',highlightNote:'Même racine ش-ي-أ : présent et subjonctif sur le même schème'},
+waznGrid:[{pattern:'فَعَلَ',label:'Passé type 1',example:'ذَهَبَ',meaning:'il est allé'},{pattern:'فَعِلَ',label:'Passé état',example:'فَرِحَ',meaning:'il s\'est réjoui'},{pattern:'فَعُلَ',label:'Passé qualité',example:'كَبُرَ',meaning:'il a grandi'},{pattern:'يَفعَلُ',label:'Présent type 1',example:'يَذهَبُ',meaning:'il va'},{pattern:'يَفعِلُ',label:'Présent type 2',example:'يَجلِسُ',meaning:'il s\'assoit'}],
+derivTable:[{forme:'ذَهَبَ',schème:'فَعَلَ',type:'Passé',fr:'il est allé'},{forme:'يَذهَبُ',schème:'يَفعَلُ',type:'Présent',fr:'il va'},{forme:'ذَاهِب',schème:'فَاعِل',type:'Participe actif',fr:'partant'},{forme:'ذَهَاب',schème:'فَعَال',type:'Masdar',fr:'l\'action d\'aller'}],
+exercises:[
+{q:'Dans تَشَاءُونَ, quelle est la racine ?',ar:'وَمَا تَشَاءُونَ إِلَّا أَن يَشَاءَ اللَّهُ',opts:['ش-و-ء','ش-ي-أ','ت-ش-أ','ش-أ-و'],answer:'ش-ي-أ',explain:'تـ est le préfixe du présent, ون est le suffixe pluriel. La racine est ش-ي-أ = vouloir'},
+{q:'ذَهَبَ suit le schème… ?',ar:'',opts:['فَعِلَ','فَعَلَ','فَعُلَ','يَفعَلُ'],answer:'فَعَلَ',explain:'dhahaba suit فَعَلَ : ذ=ف, ه=ع, ب=ل'},
+{q:'Le préfixe يـ dans يَذهَبُ indique… ?',ar:'',opts:['1re pers.','2e pers.','3e pers. masc. sing.','pluriel'],answer:'3e pers. masc. sing.',explain:'يـ = préfixe du présent pour "il" (3e masc. sing.)'}
+]},
+{title:'Racine خ-ل-ق : la création',rule:'La racine خ-ل-ق exprime l\'idée de création. C\'est l\'une des racines les plus fréquentes dans le Coran pour décrire l\'acte créateur divin.',
+rootExample:{root:['خ','ل','ق'],meaning:'idée de créer / façonner'},
+quranRef:{type:'quran',text:'خَلَقَ الْإِنسَانَ مِن صَلْصَالٍ كَالْفَخَّارِ',ref:'Sourate Ar-Raḥmān, 55:14',trans:'Il a créé l\'homme d\'une argile comme la poterie',highlight:'خَلَقَ',highlightNote:'خَلَقَ = passé 3e masc. de خ-ل-ق = il a créé'},
+waznGrid:[{pattern:'فَعَلَ',label:'Passé',example:'خَلَقَ',meaning:'il a créé'},{pattern:'يَفعُلُ',label:'Présent',example:'يَخلُقُ',meaning:'il crée'},{pattern:'فَاعِل',label:'Agent',example:'خَالِق',meaning:'Créateur'},{pattern:'مَفعُول',label:'Passif',example:'مَخلُوق',meaning:'créature'},{pattern:'فَعل',label:'Masdar',example:'خَلق',meaning:'la création'}],
+derivTable:[{forme:'خَلَقَ',schème:'فَعَلَ',type:'Passé',fr:'il a créé'},{forme:'يَخلُقُ',schème:'يَفعُلُ',type:'Présent',fr:'il crée'},{forme:'خَالِق',schème:'فَاعِل',type:'Agent',fr:'Créateur'},{forme:'مَخلُوق',schème:'مَفعُول',type:'Passif',fr:'créature'},{forme:'خَلق',schème:'فَعل',type:'Masdar',fr:'la création'}],
+exercises:[
+{q:'خَلَقَ الْإِنسَانَ — الإنسان est le… ?',ar:'خَلَقَ الْإِنسَانَ',opts:['sujet','objet direct','complément de lieu','prédicat'],answer:'objet direct',explain:'الإنسان est l\'objet direct (مفعول به) du verbe خَلَقَ'},
+{q:'خَالِق (Créateur) suit le schème فَاعِل qui indique… ?',ar:'خَالِق',opts:['l\'action elle-même','celui qui fait l\'action','ce sur quoi l\'action porte','le lieu de l\'action'],answer:'celui qui fait l\'action',explain:'فَاعِل = participe actif = celui qui fait → الخالق = le Créateur'},
+{q:'مَخلُوق (créature) suit مَفعُول qui indique… ?',ar:'مَخلُوق',opts:['l\'agent actif','le lieu','ce sur quoi l\'action porte','l\'instrument'],answer:'ce sur quoi l\'action porte',explain:'مَفعُول = participe passif = ce qui est créé → مخلوق = créature'}
+]},
+{title:'Racine ع-ب-د : adorer / servir',rule:'La racine ع-ب-د exprime le service, l\'adoration et la dévotion. Elle est fondamentale dans le vocabulaire islamique : عبادة (adoration), عبد (serviteur/esclave de Dieu).',
+rootExample:{root:['ع','ب','د'],meaning:'adorer / être serviteur'},
+quranRef:{type:'quran',text:'وَمَا خَلَقْتُ الْجِنَّ وَالْإِنسَ إِلَّا لِيَعْبُدُونِ',ref:'Sourate Adh-Dhāriyāt, 51:56',trans:'Je n\'ai créé les djinns et les hommes que pour M\'adorer',highlight:'لِيَعْبُدُونِ',highlightNote:'لِيَعبدون = pour qu\'ils adorent. Racine ع-ب-د'},
+waznGrid:[{pattern:'فَعَلَ',label:'Passé',example:'عَبَدَ',meaning:'il a adoré'},{pattern:'يَفعُدُ',label:'Présent',example:'يَعبُدُ',meaning:'il adore'},{pattern:'فَاعِل',label:'Agent',example:'عَابِد',meaning:'adorateur'},{pattern:'مَفعُول',label:'Passif',example:'مَعبُود',meaning:'adoré/idole'},{pattern:'فِعَالَة',label:'Nom verbal',example:'عِبَادَة',meaning:'adoration'}],
+derivTable:[{forme:'عَبَدَ',schème:'فَعَلَ',type:'Passé',fr:'il a adoré'},{forme:'يَعبُدُ',schème:'يَفعُلُ',type:'Présent',fr:'il adore'},{forme:'عَابِد',schème:'فَاعِل',type:'Agent',fr:'adorateur'},{forme:'مَعبُود',schème:'مَفعُول',type:'Passif',fr:'adoré'},{forme:'عِبَادَة',schème:'فِعَالَة',type:'Masdar',fr:'adoration'},{forme:'عَبد',schème:'فَعل',type:'Nom',fr:'serviteur de Dieu'}],
+exercises:[
+{q:'Dans لِيَعْبُدُونِ, la racine est… ?',ar:'لِيَعْبُدُونِ',opts:['ع-ب-د','ع-د-ب','ب-ع-د','د-ع-ب'],answer:'ع-ب-د',explain:'لِ = préposition, يـ = préfixe présent, ون = pluriel. Racine : ع-ب-د'},
+{q:'عِبَادَة (adoration) suit le schème… ?',ar:'عِبَادَة',opts:['فَعَلَ','مَفعُول','فِعَالَة','فَاعِل'],answer:'فِعَالَة',explain:'فِعَالَة = schème de nom verbal/masdar'},
+{q:'مَعبُود signifie "adoré" car il suit le schème… ?',ar:'مَعبُود',opts:['فَاعِل','فِعَال','مَفعُول','فَعلَة'],answer:'مَفعُول',explain:'مَفعُول = participe passif = "celui qui est adoré" → peut aussi désigner une idole'}
+]}
+]},
+
+{id:2,name:'Intermédiaire',label:'Niveau 3',icon:'🌙',color:'#534AB7',bg:'#EEEDFE',desc:'Grammaire, conjugaison, conversations',unlockScore:80,
+alphabet:[{ar:'ث',name:'Tha',trans:'th',forms:['ثـ','ـثـ','ـث']},{ar:'ذ',name:'Dhal',trans:'dh',forms:['ـذ']},{ar:'ص',name:'Sad',trans:'ṣ',forms:['صـ','ـصـ','ـص']},{ar:'ض',name:'Dad',trans:'ḍ',forms:['ضـ','ـضـ','ـض']},{ar:'ط',name:'Ta emp.',trans:'ṭ',forms:['طـ','ـطـ','ـط']},{ar:'ظ',name:'Dha emp.',trans:'ẓ',forms:['ظـ','ـظـ','ـظ']},{ar:'غ',name:'Ghayn',trans:'gh',forms:['غـ','ـغـ','ـغ']},{ar:'ق',name:'Qaf',trans:'q',forms:['قـ','ـقـ','ـق']},{ar:'ه',name:'Ha',trans:'h',forms:['هـ','ـهـ','ـه']}],
+vocab:[{ar:'يذهب',fr:'Il va'},{ar:'يأكل',fr:'Il mange'},{ar:'سيذهب',fr:'Il ira'},{ar:'مدرسة',fr:'École'},{ar:'طالب',fr:'Étudiant'},{ar:'معلم',fr:'Enseignant'},{ar:'كبير',fr:'Grand'},{ar:'صغير',fr:'Petit'},{ar:'جميل',fr:'Beau'},{ar:'كيف حالك',fr:'Comment vas-tu ?'}],
+grammar:[
+{title:'Le verbe au présent : الفعل المضارع',rule:'Le présent se forme avec des préfixes : أ (je), تـ (tu/elle), يـ (il), نـ (nous), تـون (vous), يـون (ils). Le présent peut exprimer une action habituelle, continue ou future proche.',
+examples:[{ar:'يَذهَبُ',trans:'yadhhab',fr:'il va'},{ar:'تَذهَبُ',trans:'tadhhab',fr:'elle va / tu vas (m.)'},{ar:'أَذهَبُ',trans:'adhhab',fr:'je vais'},{ar:'نَذهَبُ',trans:'nadhhab',fr:'nous allons'}],
+quranRef:{type:'quran',text:'يُسَبِّحُ لِلَّهِ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ',ref:'Sourate Al-Ḥashr, 59:1',trans:'Ce qui est dans les cieux et ce qui est sur terre glorifie Dieu',highlight:'يُسَبِّحُ',highlightNote:'يُسَبِّحُ = présent 3e masc. sing. Forme II de سَبَّحَ'},
+exercises:[
+{q:'يُسَبِّحُ est à quelle personne ?',ar:'يُسَبِّحُ لِلَّهِ',opts:['1re sing.','2e sing.','3e masc. sing.','1re pl.'],answer:'3e masc. sing.',explain:'Préfixe يـ = 3e masc. sing. → "il glorifie"'},
+{q:'Forme "nous créons" à partir de خَلَقَ :',ar:'',opts:['يَخلُقُ','تَخلُقُ','نَخلُقُ','أَخلُقُ'],answer:'نَخلُقُ',explain:'Préfixe نـ = "nous" → نَخلُقُ = nous créons'},
+{q:'Quel préfixe forme la 1re pers. sing. au présent ?',ar:'',opts:['يـ','تـ','أ','نـ'],answer:'أ',explain:'أ = préfixe de la 1re pers. sing. → أَذهَبُ = je vais'}
+]},
+{title:'La phrase nominale : الجملة الاسمية',rule:'La phrase nominale est composée d\'un sujet (مبتدأ) et d\'un prédicat (خبر) sans verbe "être" au présent. L\'accord se fait en genre et nombre. Le sujet est au nominatif (ـُ).',
+examples:[{ar:'اللَّهُ أَكبَرُ',trans:'allāhu akbar',fr:'Dieu est le plus grand'},{ar:'الإِنسَانُ ضَعِيفٌ',trans:'al-insānu ḍaʿīf',fr:'L\'être humain est faible'},{ar:'أنَا عَبدُ اللهِ',trans:'anā ʿabdu-llāh',fr:'Je suis le serviteur de Dieu'},{ar:'الجَنَّةُ حَقٌّ',trans:'al-jannatu ḥaqq',fr:'Le Paradis est une vérité'}],
+quranRef:{type:'hadith',text:'اللَّهُ أَكبَرُ، اللَّهُ أَكبَرُ، أَشهَدُ أَن لَا إِلَهَ إِلَّا اللَّهُ',ref:'L\'appel à la prière (Adhān)',trans:'Dieu est le plus grand... Je témoigne qu\'il n\'y a pas de divinité sauf Dieu',highlight:'اللَّهُ أَكبَرُ',highlightNote:'Phrase nominale : اللَّه (sujet) + أَكبَر (prédicat), pas de verbe être'},
+exercises:[
+{q:'Dans اللَّهُ أَكبَرُ, c\'est une phrase nominale car… ?',ar:'اللَّهُ أَكبَرُ',opts:['elle a un verbe','elle n\'a pas de verbe être','elle est au passé','elle a un pronom'],answer:'elle n\'a pas de verbe être',explain:'Sujet (اللَّهُ) + prédicat (أَكبَرُ) sans verbe = phrase nominale'},
+{q:'Dans الجَنَّةُ حَقٌّ, الجَنَّةُ est le… ?',ar:'الجَنَّةُ حَقٌّ',opts:['prédicat','verbe','sujet (مبتدأ)','complément'],answer:'sujet (مبتدأ)',explain:'Le premier élément d\'une phrase nominale est le sujet (مبتدأ)'},
+{q:'Comment traduire أنَا عَبدُ اللهِ sans verbe "être" ?',ar:'أنَا عَبدُ اللهِ',opts:['J\'étais le serviteur','Je serai serviteur','Je suis le serviteur de Dieu','Le serviteur de Dieu'],answer:'Je suis le serviteur de Dieu',explain:'Phrase nominale au présent = "être" s\'exprime par juxtaposition'}
+]},
+{title:'Le pluriel : جمع المذكر السالم et جمع المؤنث السالم',rule:'Deux pluriels réguliers : masc. sain (ـون nominatif / ـين acc./gén.) pour les humains masculins. Fém. sain (ـات) pour les féminins et noms non-humains. Le pluriel brisé (جمع التكسير) est irrégulier.',
+examples:[{ar:'مُؤْمِنُون',trans:'muʾminūn',fr:'croyants (pl. masc. sain)'},{ar:'مُؤْمِنَات',trans:'muʾmināt',fr:'croyantes (pl. fém. sain)'},{ar:'مُسلِمِين',trans:'muslimīn',fr:'musulmans (acc./gén.)'},{ar:'كُتُب',trans:'kutub',fr:'livres (pl. brisé de كتاب)'}],
+quranRef:{type:'quran',text:'إِنَّ الْمُسْلِمِينَ وَالْمُسْلِمَاتِ وَالْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ',ref:'Sourate Al-Aḥzāb, 33:35',trans:'Certes les musulmans et les musulmanes, les croyants et les croyantes...',highlight:'الْمُسْلِمِينَ الْمُسْلِمَاتِ الْمُؤْمِنِينَ الْمُؤْمِنَاتِ',highlightNote:'Les 4 formes : masc./fém. pluriel pour مسلم et مؤمن'},
+exercises:[
+{q:'الْمُسْلِمِينَ est un pluriel masc. sain à quel cas ?',ar:'الْمُسْلِمِينَ',opts:['nominatif','accusatif/génitif','indéfini','duel'],answer:'accusatif/génitif',explain:'ـين = pluriel masc. sain à l\'accusatif/génitif (vs ـون au nominatif)'},
+{q:'Comment forme-t-on le pluriel féminin sain de مُؤْمِنَة ?',ar:'',opts:['مُؤْمِنُون','مُؤْمِنَات','مُؤمِنِين','مؤَامِن'],answer:'مُؤْمِنَات',explain:'Pluriel féminin sain : on ajoute ـات → مُؤْمِنَات = croyantes'},
+{q:'كُتُب est un pluriel… ?',ar:'',opts:['masc. sain','fém. sain','brisé (irrégulier)','duel'],answer:'brisé (irrégulier)',explain:'كُتُب = pluriel brisé (جمع تكسير) de كِتَاب, la structure interne change'}
+]},
+{title:'Le subjonctif et l\'apocopé : المضارع المنصوب و المجزوم',rule:'Le présent a 3 modes : indicatif (ـُ), subjonctif/منصوب (ـَ) après أَن / لَن, apocopé/مجزوم (ـْ ou suppression) après لَم / لَا الناهية. Ces modes changent la voyelle finale.',
+examples:[{ar:'لَم يَلِدْ',trans:'lam yalid',fr:'il n\'a pas engendré (apocopé)'},{ar:'لَن نُشرِكَ',trans:'lan nushrika',fr:'nous n\'associerons pas (subj.)'},{ar:'أَن تَعبُدُوا',trans:'an taʿbudū',fr:'que vous adoriez (subj.)'},{ar:'لَا تَيأَسُوا',trans:'lā tay\'asū',fr:'ne désespérez pas (apocopé prohibitif)'}],
+quranRef:{type:'quran',text:'لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ',ref:'Sourate Al-Ikhlāṣ, 112:3-4',trans:'Il n\'a pas engendré et n\'a pas été engendré, et il n\'a aucun égal',highlight:'لَمْ يَلِدْ لَمْ يُولَدْ لَمْ يَكُن',highlightNote:'لَم + verbe apocopé (مجزوم) : voyelle finale supprimée'},
+exercises:[
+{q:'Dans لَمْ يَلِدْ, le verbe est à quel mode ?',ar:'لَمْ يَلِدْ',opts:['indicatif','subjonctif','apocopé (مجزوم)','passé'],answer:'apocopé (مجزوم)',explain:'لَم met le verbe à l\'apocopé (مجزوم) : ـد porte un sukun ْ'},
+{q:'لَن exige quel mode verbal ?',ar:'',opts:['indicatif','subjonctif (منصوب)','apocopé','passé'],answer:'subjonctif (منصوب)',explain:'لَن + subjonctif (منصوب, ـَ) = futur négatif absolu'},
+{q:'Quelle particule met le verbe à l\'apocopé pour défendre une action ?',ar:'',opts:['لَن','أَن','لَا النَّاهِيَة','إِن'],answer:'لَا النَّاهِيَة',explain:'لَا الناهية + apocopé = prohibition : "ne fais pas !" → لَا تَيأَسُوا = ne désespérez pas'}
+]},
+{title:'Le complément d\'objet direct : المفعول به',rule:'En arabe, l\'objet direct (مفعول به) se met à l\'accusatif (منصوب, ـَ). Il répond à la question "quoi / qui ?". Avec l\'article, ال reste mais la voyelle finale passe à ـَ. Sans article : tanwīn fatḥa (ـًا).',
+examples:[{ar:'خَلَقَ اللَّهُ السَّمَاوَاتِ',trans:'khalaqa-llāhu s-samāwāt',fr:'Dieu a créé les cieux'},{ar:'أَحَبَّ اللَّهُ الصَّابِرِينَ',trans:'aḥabba-llāhu ṣ-ṣābirīn',fr:'Dieu aime les patients'},{ar:'أَعبُدُ اللَّهَ',trans:'aʿbudu-llāh',fr:'J\'adore Dieu'},{ar:'قَرَأتُ كِتَاباً',trans:'qaraʾtu kitāban',fr:'J\'ai lu un livre'}],
+quranRef:{type:'quran',text:'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ',ref:'Sourate Al-Kawthar, 108:1',trans:'Nous t\'avons certes donné l\'Abondance',highlight:'الْكَوْثَرَ',highlightNote:'الْكَوثَرَ = objet direct, à l\'accusatif (ـَ)'},
+exercises:[
+{q:'Dans إِنَّا أَعطَيناكَ الْكَوثَرَ, الْكَوثَرَ est à l\'accusatif car… ?',ar:'إِنَّا أَعطَيناكَ الْكَوثَرَ',opts:['c\'est le sujet','c\'est l\'objet direct','c\'est après une préposition','c\'est un adjectif'],answer:'c\'est l\'objet direct',explain:'L\'objet direct (مفعول به) se met à l\'accusatif → الكوثَرَ (ـَ)'},
+{q:'Dans أَعبُدُ اللَّهَ, pourquoi اللَّهَ porte-t-il ـَ ?',ar:'أَعبُدُ اللَّهَ',opts:['c\'est le sujet','c\'est un adjectif','c\'est l\'objet direct','c\'est après بِ'],answer:'c\'est l\'objet direct',explain:'اللَّهَ est l\'objet de "j\'adore" → accusatif ـَ'},
+{q:'قَرَأتُ كِتَاباً : كِتَاباً porte ـًا car… ?',ar:'قَرَأتُ كِتَاباً',opts:['c\'est défini','c\'est féminin','c\'est objet direct indéfini','c\'est au nominatif'],answer:'c\'est objet direct indéfini',explain:'Objet direct indéfini = tanwīn fatḥa ـًا'}
+]}
+],
+morpho:[
+{title:'Les formes verbales augmentées I–VI',rule:'À partir d\'une racine trilitère, on crée des verbes augmentés. Forme II (فَعَّلَ) = causatif/intensif. Forme IV (أَفعَلَ) = causatif. Forme V (تَفَعَّلَ) = réfléchi de II. Forme X (اِستَفعَلَ) = demander.',
+rootExample:{root:['ع','ل','م'],meaning:'savoir / connaissance'},
+quranRef:{type:'quran',text:'عَلَّمَ الْقُرْآنَ ﴿٢﴾ خَلَقَ الْإِنسَانَ ﴿٣﴾ عَلَّمَهُ الْبَيَانَ',ref:'Sourate Ar-Raḥmān, 55:2-4',trans:'Il a enseigné le Coran, Il a créé l\'homme, Il lui a enseigné l\'expression',highlight:'عَلَّمَ عَلَّمَهُ',highlightNote:'عَلَّمَ = Forme II causative de ع-ل-م = "faire savoir" = enseigner'},
+waznGrid:[{pattern:'فَعِلَ (I)',label:'Base',example:'عَلِمَ',meaning:'il a su'},{pattern:'فَعَّلَ (II)',label:'Causatif',example:'عَلَّمَ',meaning:'il a enseigné'},{pattern:'أَفعَلَ (IV)',label:'Causatif',example:'أَعلَمَ',meaning:'il a informé'},{pattern:'تَفَعَّلَ (V)',label:'Réfléchi de II',example:'تَعَلَّمَ',meaning:'il a appris'},{pattern:'تَفَاعَلَ (VI)',label:'Réciproque',example:'تَعَاوَنَ',meaning:'coopérer'},{pattern:'اِستَفعَلَ (X)',label:'Requête',example:'اِستَعلَمَ',meaning:'s\'informer'}],
+derivTable:[{forme:'عَلِمَ',schème:'I',type:'Base',fr:'il a su'},{forme:'عَلَّمَ',schème:'II',type:'Causatif',fr:'il a enseigné'},{forme:'أَعلَمَ',schème:'IV',type:'Causatif',fr:'il a informé'},{forme:'تَعَلَّمَ',schème:'V',type:'Réfléchi',fr:'il a appris'},{forme:'عِلم',schème:'فِعل',type:'Nom',fr:'science'},{forme:'عَالِم',schème:'فَاعِل',type:'Agent',fr:'savant'}],
+exercises:[
+{q:'Dans عَلَّمَ الْقُرْآنَ, عَلَّمَ est en Forme II car… ?',ar:'عَلَّمَ الْقُرْآنَ',opts:['la 1re consonne est doublée','il a un préfixe أ','il a un préfixe تـ','la racine est quadrilitère'],answer:'la 1re consonne est doublée',explain:'Forme II = فَعَّلَ : doublement de la 2e consonne (ل → لّ) → عَلَّمَ'},
+{q:'تَعَلَّمَ (Forme V) est le réfléchi de عَلَّمَ (II). Il signifie… ?',ar:'',opts:['il a enseigné','il a informé','il a appris (se faire enseigner)','il a su'],answer:'il a appris (se faire enseigner)',explain:'Forme V = réfléchi de II : تَعَلَّمَ = "se faire enseigner" = apprendre'},
+{q:'Quelle forme verbale exprime "demander de savoir / s\'informer" ?',ar:'',opts:['Forme I','Forme II','Forme V','Forme X'],answer:'Forme X',explain:'Forme X (اِستَفعَلَ) = demander, juger → اِستَعلَمَ = s\'informer / demander à savoir'}
+]},
+{title:'Le masdar (المصدر) : nom verbal par forme',rule:'Chaque forme verbale produit un masdar selon un schème prévisible. Connaître ces schèmes permet de deviner le sens d\'un mot inconnu. Exemples : تَفعِيل (II), إِفعَال (IV), تَفَعُّل (V), اِفتِعَال (VIII).',
+rootExample:{root:['س','ب','ح'],meaning:'glorifier / louer'},
+quranRef:{type:'quran',text:'وَإِن مِّن شَيْءٍ إِلَّا يُسَبِّحُ بِحَمْدِهِ وَلَٰكِن لَّا تَفْقَهُونَ تَسْبِيحَهُمْ',ref:'Sourate Al-Isrāʾ, 17:44',trans:'Il n\'est rien qui ne Le glorifie avec Sa louange, mais vous ne comprenez pas leur glorification',highlight:'تَسْبِيحَهُمْ',highlightNote:'تَسبيح = masdar de Forme II (تَفعِيل) de سَبَّحَ'},
+waznGrid:[{pattern:'تَفعِيل (II)',label:'Masdar II',example:'تَسبِيح',meaning:'glorification'},{pattern:'إِفعَال (IV)',label:'Masdar IV',example:'إِسلَام',meaning:'soumission'},{pattern:'تَفَعُّل (V)',label:'Masdar V',example:'تَعَلُّم',meaning:'apprentissage'},{pattern:'تَفَاعُل (VI)',label:'Masdar VI',example:'تَعَاوُن',meaning:'coopération'},{pattern:'اِفتِعَال (VIII)',label:'Masdar VIII',example:'اِجتِمَاع',meaning:'réunion'}],
+derivTable:[{forme:'سَبَّحَ',schème:'II فَعَّلَ',type:'Verbe',fr:'glorifier'},{forme:'تَسبِيح',schème:'II تَفعِيل',type:'Masdar',fr:'glorification'},{forme:'أَسلَمَ',schème:'IV أَفعَلَ',type:'Verbe',fr:'se soumettre'},{forme:'إِسلَام',schème:'IV إِفعَال',type:'Masdar',fr:'Islam/soumission'},{forme:'تَعَلَّمَ',schème:'V تَفَعَّلَ',type:'Verbe',fr:'apprendre'},{forme:'تَعَلُّم',schème:'V تَفَعُّل',type:'Masdar',fr:'apprentissage'}],
+exercises:[
+{q:'تَسبِيحَهُمْ dans le verset est le masdar de quelle forme ?',ar:'تَسبِيحَهُمْ',opts:['Forme I','Forme II','Forme IV','Forme VIII'],answer:'Forme II',explain:'تَفعِيل = masdar de Forme II. تَسبيح de سَبَّحَ (II) = glorification'},
+{q:'إِسلَام suit le schème إِفعَال, masdar de quelle forme ?',ar:'إِسلَام',opts:['I','II','IV','V'],answer:'IV',explain:'إِفعَال = masdar de la Forme IV (أَفعَلَ). أَسلَمَ → إِسلَام'},
+{q:'Quel est le masdar de تَعَلَّمَ (Forme V) ?',ar:'',opts:['تَعلِيم','إِعلَام','تَعَلُّم','عِلم'],answer:'تَعَلُّم',explain:'Forme V → masdar تَفَعُّل → تَعَلُّم = apprentissage'}
+]},
+{title:'Racines د-ع-و et ق-و-ل : la parole et l\'appel',rule:'Deux racines parmi les plus fréquentes dans le Coran. د-ع-و exprime l\'appel, la prière, l\'invocation. ق-و-ل exprime la parole, la déclaration.',
+rootExample:{root:['د','ع','و'],meaning:'appeler / invoquer / prier'},
+quranRef:{type:'quran',text:'وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ',ref:'Sourate Ghāfir, 40:60',trans:'Et votre Seigneur dit : "Invoquez-Moi, Je vous répondrai"',highlight:'ادْعُونِي أَسْتَجِبْ',highlightNote:'ادعوني = impératif de د-ع-و. أستجب = répondrai (Forme X de ج-و-ب)'},
+waznGrid:[{pattern:'فَعَا (I)',label:'Passé',example:'دَعَا',meaning:'il a appelé'},{pattern:'يَدعُو',label:'Présent',example:'يَدعُو',meaning:'il appelle'},{pattern:'اُدعُ',label:'Impératif',example:'اُدعُ',meaning:'appelle !'},{pattern:'دَعوَة',label:'Nom verbal',example:'دَعوَة',meaning:'appel/invitation'},{pattern:'دَاعِي',label:'Agent',example:'دَاعِي',meaning:'celui qui appelle'}],
+derivTable:[{forme:'دَعَا',schème:'فَعَا',type:'Passé',fr:'il a appelé/invoqué'},{forme:'يَدعُو',schème:'يَفعُو',type:'Présent',fr:'il appelle'},{forme:'دَعوَة',schème:'فَعوَة',type:'Masdar',fr:'appel/invitation'},{forme:'دَاعِية',schème:'فَاعِلَة',type:'Agent',fr:'prédicateur'},{forme:'قَالَ',schème:'فَالَ',type:'Passé',fr:'il a dit'},{forme:'قَول',schème:'فَعل',type:'Masdar',fr:'parole/dit'}],
+exercises:[
+{q:'ادْعُونِي est l\'impératif de قuelle racine ?',ar:'ادْعُونِي',opts:['د-ع-و','د-ع-ب','ع-د-و','د-و-ع'],answer:'د-ع-و',explain:'ادعوني = impératif pluriel de دَعَا (د-ع-و) + ني = me'},
+{q:'دَعوَة (invitation/prédication) suit quel type de schème ?',ar:'دَعوَة',opts:['verbe au passé','masdar/nom verbal','participe actif','participe passif'],answer:'masdar/nom verbal',explain:'دَعوَة = فَعوَة, nom verbal/masdar de دَعَا'},
+{q:'Dans وَقَالَ رَبُّكُمُ, قَالَ est passé de la racine… ?',ar:'وَقَالَ رَبُّكُمُ',opts:['ق-ل-و','ق-و-ل','ق-ل-ب','و-ق-ل'],answer:'ق-و-ل',explain:'قَالَ = passé de ق-و-ل (verbe sourd/creux). الواو est une lettre de faiblesse dans la racine'}
+]}
+]},
+
+{id:3,name:'Avancé',label:'Niveau 4',icon:'⭐',color:'#BA7517',bg:'#FAEEDA',desc:'Textes complexes, dialectes, littérature',unlockScore:80,
+alphabet:[{ar:'ة',name:'Ta marbuta',trans:'a/at',forms:['ـة']},{ar:'ى',name:'Alif maqsura',trans:'â',forms:['ـى']},{ar:'ء',name:'Hamza',trans:"ʾ",forms:['ء','أ','إ','ؤ','ئ']},{ar:'ّ',name:'Shadda',trans:'double',forms:['ـّ']}],
+vocab:[{ar:'الجمهورية',fr:'La République'},{ar:'الاقتصاد',fr:"L'économie"},{ar:'المجتمع',fr:'La société'},{ar:'التاريخ',fr:"L'histoire"},{ar:'الفلسفة',fr:'La philosophie'},{ar:'يستطيع',fr:'Il peut'},{ar:'يجب',fr:'Il faut'},{ar:'ربما',fr:'Peut-être'},{ar:'على الرغم من',fr:'Malgré'},{ar:'بينما',fr:'Tandis que'}],
+grammar:[
+{title:'Les cas grammaticaux : الإعراب',rule:'3 cas : nominatif (مرفوع ـُ) pour le sujet, accusatif (منصوب ـَ) pour l\'objet direct/certains adverbes, génitif (مجرور ـِ) après les prépositions et dans l\'idafa. Les mots invariables sont dits "مبني".',
+examples:[{ar:'جَاءَ الرَّسُولُ',trans:'jāʾa r-rasūl',fr:'Le messager est venu (nominatif)'},{ar:'أَرسَلنَا الرَّسُولَ',trans:'arsalnā r-rasūl',fr:'Nous avons envoyé le messager (acc.)'},{ar:'مِن رَّبِّهِم',trans:'min rabbihim',fr:'de leur Seigneur (génitif)'}],
+quranRef:{type:'quran',text:'مُّحَمَّدٌ رَّسُولُ اللَّهِ وَالَّذِينَ مَعَهُ أَشِدَّاءُ عَلَى الْكُفَّارِ رُحَمَاءُ بَيْنَهُمْ',ref:'Sourate Al-Fatḥ, 48:29',trans:'Muhammad est le Messager de Dieu, et ceux qui sont avec lui sont durs envers les mécréants, miséricordieux entre eux',highlight:'مُّحَمَّدٌ رَّسُولُ اللَّهِ',highlightNote:'مُحَمَّدٌ (nominatif indef.) + رَسُولُ اللهِ (annexion = prédicat)'},
+exercises:[
+{q:'Dans مُحَمَّدٌ رَسُولُ اللهِ, مُحَمَّدٌ porte ـٌ = tanwīn damma, c\'est le cas… ?',ar:'مُّحَمَّدٌ رَّسُولُ اللَّهِ',opts:['accusatif indéfini','génitif indéfini','nominatif indéfini','indéfini sans cas'],answer:'nominatif indéfini',explain:'ـٌ = damma tanwīn = nominatif indéfini. مُحَمَّد est ici le sujet de la phrase nominale'},
+{q:'Dans مِن رَّبِّهِم, رَبِّهِم est au génitif car… ?',ar:'مِن رَّبِّهِم',opts:['c\'est le sujet','c\'est l\'objet','il suit la préposition مِن','c\'est un adjectif'],answer:'il suit la préposition مِن',explain:'Toute préposition (حرف جر) entraîne le génitif sur le nom suivant'},
+{q:'La voyelle ـَ en fin de nom indique quel cas ?',ar:'',opts:['nominatif','accusatif','génitif','indéfini générique'],answer:'accusatif',explain:'ـَ (fatha) = accusatif (منصوب). Ex: رَأَيتُ الرَّسُولَ = j\'ai vu le messager'}
+]},
+{title:'Le duel : المثنى',rule:'Le duel s\'obtient en ajoutant ـَان (nominatif) ou ـَين (accusatif/génitif) au singulier. Il est utilisé pour exactement deux êtres ou choses. Très fréquent dans le Coran.',
+examples:[{ar:'يَدَانِ',trans:'yadāni',fr:'deux mains (nominatif)'},{ar:'يَدَين',trans:'yadayn',fr:'deux mains (acc./gén.)'},{ar:'الجَنَّتَان',trans:'al-jannatayn',fr:'les deux jardins/paradis'},{ar:'يَومَين',trans:'yawmayn',fr:'deux jours'}],
+quranRef:{type:'quran',text:'وَلِمَنْ خَافَ مَقَامَ رَبِّهِ جَنَّتَانِ',ref:'Sourate Ar-Raḥmān, 55:46',trans:'Pour celui qui craint la station de son Seigneur, il y a deux jardins',highlight:'جَنَّتَانِ',highlightNote:'جَنَّتَانِ = duel nominatif de جَنَّة (jardin/paradis)'},
+exercises:[
+{q:'جَنَّتَانِ dans le verset est… ?',ar:'جَنَّتَانِ',opts:['singulier','duel nominatif','pluriel','duel génitif'],answer:'duel nominatif',explain:'ـَانِ = suffixe du duel nominatif. جَنَّتَانِ = deux jardins (sujet)'},
+{q:'Comment forme-t-on le duel accusatif/génitif de كِتَاب ?',ar:'',opts:['كِتَابَان','كِتَابَين','كِتَابَات','كِتَابُون'],answer:'كِتَابَين',explain:'Duel acc./gén. : ـَين → كِتَابَين = deux livres (objet ou après prép.)'},
+{q:'Sourate Ar-Raḥmān répète : فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَان — كُمَا est un pronom duel signifiant… ?',ar:'رَبِّكُمَا تُكَذِّبَان',opts:['vous (pluriel)','vous deux (duel)','lui','nous'],answer:'vous deux (duel)',explain:'ـكُمَا = pronom duel "vous deux", s\'adresse aux djinns et aux hommes (thème de la sourate)'}
+]},
+{title:'La condition : أسلوب الشرط',rule:'La phrase conditionnelle comprend : une particule conditionnelle (إِن / إِذَا) + verbe apocopé (فعل الشرط) + réponse (جواب الشرط). إِن = si (incertain). إِذَا = si/quand (probable ou certain).',
+examples:[{ar:'إِن تَنصُرُوا اللَّهَ يَنصُركُم',trans:'',fr:'Si vous soutenez Dieu, Il vous soutiendra'},{ar:'إِذَا جَاءَ نَصرُ اللهِ',trans:'',fr:'Quand vient le secours de Dieu...'},{ar:'مَن يَعمَل خَيرًا يَرَه',trans:'',fr:'Quiconque fait le bien le verra'},{ar:'مَن يَتَّقِ اللَّهَ يَجعَل لَه مَخرَجًا',trans:'',fr:'Quiconque craint Dieu, Il lui ouvrira une issue'}],
+quranRef:{type:'quran',text:'إِن تَنصُرُوا اللَّهَ يَنصُرْكُمْ وَيُثَبِّتْ أَقْدَامَكُمْ',ref:'Sourate Muḥammad, 47:7',trans:'Si vous soutenez Dieu, Il vous soutiendra et affermira vos pas',highlight:'إِن تَنصُرُوا ... يَنصُرْكُمْ',highlightNote:'إِن + verbe condition (تنصروا) + réponse apocopée (يَنصُرْكُم)'},
+exercises:[
+{q:'Dans إِن تَنصُرُوا اللَّهَ يَنصُرْكُمْ, إِن est une particule de… ?',ar:'إِن تَنصُرُوا اللَّهَ يَنصُرْكُمْ',opts:['négation','question','condition','emphase'],answer:'condition',explain:'إِن = particule conditionnelle (حرف شرط) = "si"'},
+{q:'يَنصُرْكُمْ (Il vous soutiendra) est à quel mode dans cette phrase conditionnelle ?',ar:'يَنصُرْكُمْ',opts:['indicatif','subjonctif','apocopé','passé'],answer:'apocopé',explain:'La réponse de la condition (جواب الشرط) est au mode apocopé (مجزوم)'},
+{q:'Quelle est la différence entre إِن et إِذَا ?',ar:'',opts:['pas de différence','إِن = condition incertaine, إِذَا = probable/certaine','إِن = passé, إِذَا = futur','إِن = négatif, إِذَا = positif'],answer:'إِن = condition incertaine, إِذَا = probable/certaine',explain:'إِن implique l\'incertitude. إِذَا implique la probabilité ou la certitude de la condition'}
+]},
+{title:'Le passif : المبني للمجهول',rule:'Le passif supprime le sujet et met l\'objet comme sujet grammatical. Au passé : la 1re voyelle devient u, la 2e devient i → فُعِلَ. Au présent : préfixe avec u, avant-dernière syllabe avec a → يُفعَلُ.',
+examples:[{ar:'خُلِقَ الإِنسَانُ',trans:'khuliqa l-insān',fr:'L\'homme a été créé'},{ar:'أُنزِلَ الكِتَابُ',trans:'unzila l-kitāb',fr:'Le Livre a été révélé'},{ar:'يُبعَثُ المَوتَى',trans:'yubʿathu l-mawtā',fr:'Les morts seront ressuscités'},{ar:'غُفِرَ لَهُ',trans:'ghufira lah',fr:'Il lui a été pardonné'}],
+quranRef:{type:'quran',text:'إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ',ref:'Sourate Al-Qadr, 97:1',trans:'Certes Nous l\'avons révélé lors de la Nuit du Destin',highlight:'أَنزَلْنَاهُ',highlightNote:'Forme active ici (Nous l\'avons révélé). Comparer : أُنزِلَ = il fut révélé (passif)'},
+exercises:[
+{q:'أُنزِلَ est le passif de أَنزَلَ. On reconnaît le passif passé car… ?',ar:'أُنزِلَ',opts:['la 2e voyelle devient u','la 1re voyelle devient u et la 2e devient i','il a un préfixe أ','le verbe est court'],answer:'la 1re voyelle devient u et la 2e devient i',explain:'Passif passé : schème فُعِلَ → 1re voyelle u, 2e voyelle i → أُنزِلَ'},
+{q:'يُبعَثُ est le passif présent de بَعَثَ. On le reconnaît car… ?',ar:'يُبعَثُ',opts:['préfixe avec u, avant-dernière syllabe avec a','préfixe avec i','doublement de consonne','suffixe ـون'],answer:'préfixe avec u, avant-dernière syllabe avec a',explain:'Passif présent : يُفعَلُ → préfixe yu, avant-dernière voyelle a'},
+{q:'غُفِرَ لَهُ signifie "il lui a été pardonné". Pourquoi n\'y a-t-il pas de sujet ?',ar:'غُفِرَ لَهُ',opts:['c\'est une erreur','le passif supprime le sujet','le sujet est sous-entendu indéfini','c\'est un impératif'],answer:'le passif supprime le sujet',explain:'Le passif (مبني للمجهول) supprime volontairement le sujet, mettant l\'accent sur l\'action elle-même'}
+]},
+{title:'Kāna et ses sœurs : كان وأخواتها',rule:'كَانَ et ses sœurs (أَصبَحَ، أَمسَى، ظَلَّ، بَاتَ، لَيسَ، صَارَ، زَالَ...) sont des verbes incomplets. Ils se conjuguent normalement mais exigent un sujet au nominatif et un prédicat à l\'accusatif.',
+examples:[{ar:'كَانَ اللَّهُ غَفُورًا رَّحِيمًا',trans:'kāna-llāhu ghafūran raḥīmā',fr:'Dieu est/était Pardonneur, Miséricordieux'},{ar:'لَيسَ كَمِثلِهِ شَيءٌ',trans:'laysa kamithlihi shayʾ',fr:'Rien n\'est semblable à Lui'},{ar:'وَكَانَ عَرشُهُ عَلَى المَاءِ',trans:'',fr:'Et Son Trône était sur l\'eau'}],
+quranRef:{type:'quran',text:'وَكَانَ اللَّهُ بِكُلِّ شَيْءٍ عَلِيمًا',ref:'Sourate Al-Aḥzāb, 33:40',trans:'Et Dieu est savant de toute chose',highlight:'كَانَ اللَّهُ ... عَلِيمًا',highlightNote:'كَانَ : اللَّهُ = sujet (nominatif), عَلِيمًا = prédicat (accusatif ـًا)'},
+exercises:[
+{q:'Dans كَانَ اللَّهُ عَلِيمًا, عَلِيمًا porte ـًا car c\'est le… ?',ar:'كَانَ اللَّهُ بِكُلِّ شَيْءٍ عَلِيمًا',opts:['sujet de كان','prédicat de كان (accusatif)','objet direct','complément de lieu'],answer:'prédicat de كان (accusatif)',explain:'كَانَ met son prédicat (خبر كان) à l\'accusatif → عَلِيمًا (ـًا)'},
+{q:'لَيسَ كَمِثلِهِ شَيءٌ — لَيسَ est la sœur de كَانَ signifiant… ?',ar:'لَيسَ كَمِثلِهِ شَيءٌ',opts:['il était','il n\'est pas / ce n\'est pas','il deviendra','il semblait'],answer:'il n\'est pas / ce n\'est pas',explain:'لَيسَ = sœur de كان pour la négation du présent : "n\'est pas"'},
+{q:'Toutes les sœurs de كَانَ partagent quelle caractéristique grammaticale ?',ar:'',opts:['elles mettent sujet et prédicat au génitif','elles mettent le sujet au nominatif et le prédicat à l\'accusatif','elles n\'ont pas de sujet','elles sont toujours au passé'],answer:'elles mettent le sujet au nominatif et le prédicat à l\'accusatif',explain:'Toutes les sœurs de كان = verbes incomplets : sujet مرفوع, prédicat منصوب'}
+]}
+],
+morpho:[
+{title:'Formes VIII et X et leurs masdar',rule:'Forme VIII (اِفتَعَلَ) = action réflexive/pour soi. Masdar : اِفتِعَال. Forme X (اِستَفعَلَ) = demander, estimer, juger. Masdar : اِستِفعَال. Ces deux formes sont très productives en arabe moderne et classique.',
+rootExample:{root:['ج','م','ع'],meaning:'rassembler'},
+quranRef:{type:'quran',text:'يَوْمَ يَجْمَعُكُمْ لِيَوْمِ الْجَمْعِ',ref:'Sourate At-Taghābun, 64:9',trans:'Le Jour où Il vous rassemblera pour le Jour du Rassemblement',highlight:'يَجْمَعُكُمْ الْجَمْعِ',highlightNote:'يجمع = présent Forme I. الجمع = masdar I. Comparer avec اِجتَمَعَ (VIII)'},
+waznGrid:[{pattern:'فَعَلَ (I)',label:'Base',example:'جَمَعَ',meaning:'rassembler'},{pattern:'اِجتَمَعَ (VIII)',label:'Réflexif',example:'اِجتَمَعَ',meaning:'se réunir'},{pattern:'اِستَجمَعَ (X)',label:'Requête',example:'اِستَجمَعَ',meaning:'rassembler ses forces'},{pattern:'اِجتِمَاع',label:'Masdar VIII',example:'اِجتِمَاع',meaning:'réunion'},{pattern:'اِستِجمَاع',label:'Masdar X',example:'اِستِجمَاع',meaning:'concentration'}],
+derivTable:[{forme:'جَمَعَ',schème:'I',type:'Base',fr:'rassembler'},{forme:'اِجتَمَعَ',schème:'VIII',type:'Réflexif',fr:'se réunir'},{forme:'اِجتِمَاع',schème:'Masdar VIII',type:'Nom',fr:'réunion'},{forme:'مُجتَمَع',schème:'Participe VIII',type:'Nom passif',fr:'société'},{forme:'اِستَغفَرَ',schème:'X',type:'Verbe X',fr:'demander pardon'},{forme:'اِستِغفَار',schème:'Masdar X',type:'Nom',fr:'demande de pardon'}],
+exercises:[
+{q:'اِجتَمَعَ (se réunir) est en Forme VIII car… ?',ar:'اِجتَمَعَ',opts:['la 1re consonne est doublée','il y a اِفتَعَلَ avec t inséré','il a un préfixe أ','la racine est quadrilitère'],answer:'il y a اِفتَعَلَ avec t inséré',explain:'Forme VIII = اِفتَعَلَ : insertion d\'un ت après la 1re consonne de la racine'},
+{q:'اِستَغفَرَ (demander pardon) est en Forme X. Son masdar est… ?',ar:'اِستَغفَرَ',opts:['غُفرَان','غَفَّارَة','اِستِغفَار','إِغفَار'],answer:'اِستِغفَار',explain:'Masdar Forme X = اِستِفعَال → اِستِغفَار = istighfār = demande de pardon'},
+{q:'مُجتَمَع (société) dérive de اِجتَمَعَ (Forme VIII). C\'est un… ?',ar:'مُجتَمَع',opts:['masdar','participe actif','participe passif de VIII','verbe'],answer:'participe passif de VIII',explain:'مُفتَعَل = participe passif de Forme VIII → مُجتَمَع = "ce où l\'on se réunit" = société'}
+]},
+{title:'Noms d\'instrument et de lieu : اسم الآلة و اسم المكان',rule:'اسم الآلة (instrument) : schèmes مِفعَال، مِفعَل، مِفعَلة. اسم المكان (lieu) : schèmes مَفعَل، مَفعِل، مَفعَلة. Ces schèmes sont très réguliers et permettent de déduire le sens.',
+rootExample:{root:['س','ج','د'],meaning:'se prosterner'},
+quranRef:{type:'quran',text:'إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ',ref:'Sourate At-Tawba, 9:18',trans:'Seul fréquente les mosquées de Dieu celui qui croit en Dieu',highlight:'مَسَاجِدَ',highlightNote:'مَسَاجِد = pluriel de مَسجِد (lieu de prosternation) schème مَفعِل'},
+waznGrid:[{pattern:'مَفعَل',label:'Lieu type 1',example:'مَكتَب',meaning:'bureau'},{pattern:'مَفعِل',label:'Lieu type 2',example:'مَسجِد',meaning:'mosquée'},{pattern:'مَفعَلة',label:'Lieu type 3',example:'مَدرَسَة',meaning:'école'},{pattern:'مِفعَال',label:'Instrument',example:'مِفتَاح',meaning:'clé'},{pattern:'مِفعَلة',label:'Instrument',example:'مِكنَسَة',meaning:'balai'}],
+derivTable:[{forme:'مَسجِد',schème:'مَفعِل',type:'Lieu',fr:'mosquée (lieu de prosternation)'},{forme:'مَدرَسَة',schème:'مَفعَلة',type:'Lieu',fr:'école (lieu d\'étude)'},{forme:'مَكتَب',schème:'مَفعَل',type:'Lieu',fr:'bureau (lieu d\'écriture)'},{forme:'مِفتَاح',schème:'مِفعَال',type:'Instrument',fr:'clé (instrument d\'ouverture)'},{forme:'مَيدَان',schème:'مَفعَال',type:'Lieu large',fr:'champ de bataille / place'}],
+exercises:[
+{q:'مَسجِد suit مَفعِل, donc c\'est un… ?',ar:'مَسَاجِدَ اللَّهِ',opts:['instrument','nom d\'agent','nom de lieu','masdar'],answer:'nom de lieu',explain:'مَفعِل = schème de lieu → مَسجِد = lieu de سَجَدَ = lieu de prosternation = mosquée'},
+{q:'Racine de مَدرَسَة (école) ?',ar:'',opts:['م-د-ر','د-ر-س','ر-س-م','م-ر-س'],answer:'د-ر-س',explain:'Le م initial est du schème مَفعَلة, la racine est د-ر-س = étudier'},
+{q:'مِفتَاح (clé) est un nom d\'instrument car il suit… ?',ar:'مِفتَاح',opts:['مَفعَل','مَفعِل','مِفعَال','فَاعِل'],answer:'مِفعَال',explain:'مِفعَال = schème d\'instrument (avec كسرة initiale). مفتاح = instrument d\'ouverture = clé'}
+]}
+]},
+
+{id:4,name:'Expert',label:'Niveau 5',icon:'🏆',color:'#993556',bg:'#FBEAF0',desc:'Arabe classique, rhétorique, textes coraniques',unlockScore:null,
+alphabet:[{ar:'إِنَّ',name:'Inna',trans:'certes',forms:['إِنَّ']},{ar:'كَانَ',name:'Kana',trans:'était',forms:['كَانَ']},{ar:'لَيْسَ',name:'Laysa',trans:"n'est pas",forms:['لَيْسَ']}],
+vocab:[{ar:'الحَمدُ للهِ',fr:'Louange à Dieu'},{ar:'بِسمِ اللهِ',fr:'Au nom de Dieu'},{ar:'الصَّرف',fr:'La morphologie'},{ar:'النَّحو',fr:'La syntaxe'},{ar:'البَلاغة',fr:'La rhétorique'},{ar:'الإعراب',fr:'Analyse grammaticale'},{ar:'المَصدَر',fr:'Nom verbal'},{ar:'الفِعلُ المُضارع',fr:'Verbe au présent'},{ar:'الإسناد',fr:'Prédication'},{ar:'الضَّمير',fr:'Pronom'}],
+grammar:[
+{title:'إِنَّ وأخواتها',rule:'إِنَّ et ses sœurs (أَنَّ، كَأَنَّ، لَكِنَّ، لَيتَ، لَعَلَّ) sont des particules d\'emphase ou de modulation. Elles mettent leur sujet à l\'accusatif (اسم إنّ) et laissent le prédicat au nominatif (خبر إنّ).',
+examples:[{ar:'إِنَّ اللَّهَ غَفُورٌ رَّحِيمٌ',trans:'',fr:'Certes Dieu est Pardonneur, Miséricordieux'},{ar:'لَيتَ قَومِي يَعلَمُون',trans:'',fr:'Plût au ciel que mon peuple sache !'},{ar:'لَعَلَّكُم تَتَّقُون',trans:'',fr:'Afin que vous soyez pieux'},{ar:'كَأَنَّهُم حُمُرٌ مُستَنفِرَة',trans:'',fr:'Comme s\'ils étaient des ânes effarouchés'}],
+quranRef:{type:'quran',text:'إِنَّ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ كَانَتْ لَهُمْ جَنَّاتُ الْفِرْدَوْسِ نُزُلًا',ref:'Sourate Al-Kahf, 18:107',trans:'Certes ceux qui croient et accomplissent les bonnes œuvres auront les jardins du Firdaws en demeure',highlight:'إِنَّ الَّذِينَ',highlightNote:'إِنَّ + اسم إنّ (الذين) à l\'accusatif (ici relatif invariable)'},
+exercises:[
+{q:'إِنَّ اللَّهَ غَفُورٌ — اللَّهَ porte ـَ car c\'est l\'اسم إنّ, donc… ?',ar:'إِنَّ اللَّهَ غَفُورٌ',opts:['il est au génitif','il est à l\'accusatif','il est au nominatif','il est invariable'],answer:'il est à l\'accusatif',explain:'اسم إنّ (sujet de إنّ) se met à l\'accusatif : اللَّهَ (ـَ)'},
+{q:'لَعَلَّكُم تَتَّقُون — لَعَلَّ exprime… ?',ar:'لَعَلَّكُم تَتَّقُون',opts:['la certitude','l\'espoir / le souhait probable','la ressemblance','la correction'],answer:'l\'espoir / le souhait probable',explain:'لَعَلَّ = espoir probable → "peut-être / afin que" (traduit l\'espoir ou le but)'},
+{q:'كَأَنَّ exprime quelle nuance ?',ar:'',opts:['certitude','souhait irréel','ressemblance / comparaison','correction'],answer:'ressemblance / comparaison',explain:'كَأَنَّ = "comme si" → comparaison avec ce qui suit porte sur la ressemblance apparente'}
+]},
+{title:'L\'emphase et la mise en valeur : أسلوب التوكيد',rule:'L\'arabe possède plusieurs procédés d\'emphase : إِنَّ (emphase nominale), لَقَد (emphase verbale au passé), لَـ + présent (serment), التوكيد اللفظي (répétition), التوكيد المعنوي (نَفس, عَين, كِلا, كُلّ).',
+examples:[{ar:'وَلَقَد كَرَّمنَا بَنِي آدَم',trans:'',fr:'Nous avons certes honoré les fils d\'Adam'},{ar:'فَبِعِزَّتِكَ لَأُغوِيَنَّهُم',trans:'',fr:'Par Ta Gloire, je les égarerai certes tous'},{ar:'جَاءَ القَومُ كُلُّهُم',trans:'',fr:'Le peuple est venu dans son entièreté'},{ar:'رَأَيتُهُ بِعَيني',trans:'',fr:'Je l\'ai vu de mes propres yeux'}],
+quranRef:{type:'quran',text:'وَلَقَدْ كَرَّمْنَا بَنِي آدَمَ وَحَمَلْنَاهُمْ فِي الْبَرِّ وَالْبَحْرِ',ref:'Sourate Al-Isrāʾ, 17:70',trans:'Nous avons certes honoré les fils d\'Adam, les portant sur terre et sur mer',highlight:'وَلَقَدْ كَرَّمْنَا',highlightNote:'لَقَد = emphase du passé (lām + qad) : "nous avons certes / vraiment honoré"'},
+exercises:[
+{q:'وَلَقَدْ كَرَّمنَا — لَقَد est un procédé d\'emphase pour… ?',ar:'وَلَقَدْ كَرَّمْنَا',opts:['le présent','le futur','le passé','la condition'],answer:'le passé',explain:'لَ + قَد = emphase du passé → traduit "certes / vraiment" devant un verbe au passé'},
+{q:'التوكيد المعنوي utilise des mots comme كُلّ, نَفس, عَين pour… ?',ar:'',opts:['introduire une condition','renforcer le sens du nom précédent','former le duel','exprimer la négation'],answer:'renforcer le sens du nom précédent',explain:'التوكيد المعنوي = emphase sémantique : كُلّ = entièreté, نَفس = lui-même/elle-même, عَين = personnellement'},
+{q:'Dans رَأَيتُهُ بِعَيني, بِعَيني est un procédé d\'emphase signifiant… ?',ar:'رَأَيتُهُ بِعَيني',opts:['avec son œil','par l\'œil','de mes propres yeux (emphase)','dans l\'œil'],answer:'de mes propres yeux (emphase)',explain:'بِعَيني = emphase idiomatique : "avec mon propre œil" = de mes propres yeux'}
+]},
+{title:'La rhétorique coranique : أسلوب الاستفهام الإنكاري',rule:'L\'interrogation rhétorique (الاستفهام الإنكاري) pose une question dont la réponse est évidente. Elle n\'attend pas de réponse mais renforce un jugement. Les particules : أَ، هَل، أَلَيسَ، أَوَلَم.',
+examples:[{ar:'أَلَيسَ اللَّهُ بِأَحكَمِ الحَاكِمِين',trans:'',fr:'Dieu n\'est-Il pas le plus sage des juges ?'},{ar:'أَوَلَم يَرَوا',trans:'',fr:'N\'ont-ils pas vu ?'},{ar:'فَأَينَ تَذهَبُون',trans:'',fr:'Où donc allez-vous ?'},{ar:'هَل جَزَاءُ الإِحسَانِ إِلَّا الإِحسَان',trans:'',fr:'La récompense du bien n\'est-elle pas le bien ?'}],
+quranRef:{type:'quran',text:'أَلَيْسَ اللَّهُ بِكَافٍ عَبْدَهُ',ref:'Sourate Az-Zumar, 39:36',trans:'Dieu ne suffit-Il pas à Son serviteur ?',highlight:'أَلَيْسَ اللَّهُ بِكَافٍ',highlightNote:'Interrogation rhétorique : la réponse attendue = "Bien sûr que Dieu suffit !"'},
+exercises:[
+{q:'أَلَيسَ اللَّهُ بِكَافٍ عَبدَهُ est une question… ?',ar:'أَلَيسَ اللَّهُ بِكَافٍ عَبدَهُ',opts:['qui attend une réponse inconnue','rhétorique (réponse évidente)','conditionnelle','négative simple'],answer:'rhétorique (réponse évidente)',explain:'الاستفهام الإنكاري = question rhétorique. La réponse = "si, bien sûr !" → renforce la confiance en Dieu'},
+{q:'هَل جَزَاءُ الإِحسَانِ إِلَّا الإِحسَان — la réponse implicite est… ?',ar:'هَل جَزَاءُ الإِحسَانِ إِلَّا الإِحسَان',opts:['la récompense n\'est pas le bien','la récompense est certes le bien','il n\'y a pas de récompense','la récompense est inconnue'],answer:'la récompense est certes le bien',explain:'La question rhétorique avec إِلَّا (sauf) + هَل = affirmation forte : "la récompense du bien ne peut être que le bien"'},
+{q:'أَوَلَم يَرَوا est composé de أَ + وَ + لَم. Quelle est la fonction de أَ ici ?',ar:'أَوَلَم يَرَوا',opts:['préposition','particule interrogative rhétorique','conjonction','pronom'],answer:'particule interrogative rhétorique',explain:'أَ + وَ + لَم = "Et n\'ont-ils pas...?" : أَ interrogatif + و conjonction + لَم négatif'}
+]},
+{title:'La stylistique : الالتفات et l\'hyperbole البلاغة',rule:'الالتفات = changement stylistique de personne (de "il" à "tu" ou "nous") pour dynamiser le discours. البلاغة comprend التشبيه (comparaison), الاستعارة (métaphore), الكناية (allusion).',
+examples:[{ar:'إِيَّاكَ نَعبُدُ وَإِيَّاكَ نَستَعِين',trans:'',fr:'C\'est Toi seul que nous adorons, c\'est Toi seul dont nous implorons l\'aide'},{ar:'اللَّهُ نُورُ السَّمَاوَاتِ وَالأَرض',trans:'',fr:'Dieu est la Lumière des cieux et de la terre'},{ar:'وَجَعَلنَا مِنَ المَاءِ كُلَّ شَيءٍ حَيّ',trans:'',fr:'Et Nous avons fait de l\'eau toute chose vivante'}],
+quranRef:{type:'quran',text:'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',ref:'Sourate Al-Fatiha, 1:5',trans:'C\'est Toi seul que nous adorons et c\'est Toi seul dont nous implorons l\'aide',highlight:'إِيَّاكَ نَعبُدُ',highlightNote:'Passage du "Il" (1:1-4) au "Tu" (1:5) = التفات pour créer une intimité divine'},
+exercises:[
+{q:'En Al-Fatiha, les versets 1-4 parlent de Dieu à la 3e personne. Au v.5 إِيَّاكَ, on passe à la 2e personne. Ce procédé s\'appelle… ?',ar:'إِيَّاكَ نَعبُدُ',opts:['التوكيد','الالتفات','الاستفهام الإنكاري','التشبيه'],answer:'الالتفات',explain:'الالتفات = changement de personne stylistique. Ce passage du "il" au "tu" crée une proximité directe avec Dieu'},
+{q:'اللَّهُ نُورُ السَّمَاوَاتِ (Dieu est la Lumière) est une figure de style appelée… ?',ar:'اللَّهُ نُورُ السَّمَاوَاتِ',opts:['التشبيه (comparaison avec comme)','الاستعارة (métaphore directe)','الكناية (allusion)','الطباق (antithèse)'],answer:'الاستعارة (métaphore directe)',explain:'استعارة = métaphore directe sans "comme". Dieu EST la lumière (identité métaphorique, pas comparaison)'},
+{q:'إِيَّاكَ en début de phrase (objet avant le verbe) exprime… ?',ar:'إِيَّاكَ نَعبُدُ',opts:['un complément ordinaire','une emphase d\'exclusivité (Toi seul)','une question','une condition'],answer:'une emphase d\'exclusivité (Toi seul)',explain:'Placer إِيَّاكَ (objet) avant le verbe نَعبُدُ = emphase d\'exclusivité : "Toi et personne d\'autre que nous adorons"'}
+]},
+{title:'La négation complexe et le serment : القسم',rule:'Le serment (القسم) est très fréquent dans le Coran. Structure : و/ب/ت + nom du serment + جواب القسم (réponse renforcée avec لَ + لَقَد). Le serment peut porter sur des créatures (le soleil, la nuit, l\'âme...).',
+examples:[{ar:'وَالفَجرِ',trans:'',fr:'Par l\'aube !'},{ar:'وَالعَصرِ إِنَّ الإِنسَانَ لَفِي خُسر',trans:'',fr:'Par le temps ! L\'homme est certes en perdition'},{ar:'وَالشَّمسِ وَضُحَاهَا',trans:'',fr:'Par le soleil et sa clarté matinale'},{ar:'وَاللَّهِ لَأَفعَلَنَّ',trans:'',fr:'Par Dieu, je le ferai certes'}],
+quranRef:{type:'quran',text:'وَالْعَصْرِ ﴿١﴾ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ ﴿٢﴾ إِلَّا الَّذِينَ آمَنُوا',ref:'Sourate Al-ʿAṣr, 103:1-3',trans:'Par le Temps ! L\'homme est certes en perdition, sauf ceux qui croient...',highlight:'وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',highlightNote:'وَ + العصر = serment. إنّ + لَفِي = double emphase dans la réponse au serment'},
+exercises:[
+{q:'وَالعَصرِ commence par وَ qui est ici… ?',ar:'وَالْعَصْرِ',opts:['conjonction "et"','particule de serment','préposition','négation'],answer:'particule de serment',explain:'وَ de serment = "par". وَالعَصرِ = "Par le Temps !" (le nom qui suit est au génitif)'},
+{q:'Dans إِنَّ الإِنسَانَ لَفِي خُسرٍ, la double emphase est marquée par… ?',ar:'إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',opts:['إِنَّ seul','لَفِي seul','إِنَّ + لَ (lām d\'emphase)','ال seul'],answer:'إِنَّ + لَ (lām d\'emphase)',explain:'إِنَّ = emphase nominale + لَ (lām muzdawaja) dans le prédicat = double insistance'},
+{q:'La réponse au serment (جواب القسم) dans les versets coraniques est généralement… ?',ar:'',opts:['une question rhétorique','une négation','une phrase renforcée par إِنَّ ou لَقَد','une phrase au passif'],answer:'une phrase renforcée par إِنَّ ou لَقَد',explain:'جواب القسم = réponse au serment, toujours renforcée : إِنَّ (nominal) ou لَقَد (verbal passé)'}
+]}
+],
+morpho:[
+{title:'Morphologie coranique avancée : الصرف',rule:'L\'arabe coranique use de schèmes classiques très précis. Le schème فَعِيل est fréquent pour les attributs divins (qualité intense). اسم المبالغة exprime l\'hyperbole nominale avec 5 schèmes principaux.',
+rootExample:{root:['ر','ح','م'],meaning:'miséricorde divine'},
+quranRef:{type:'quran',text:'وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ فَسَأَكْتُبُهَا لِلَّذِينَ يَتَّقُونَ',ref:'Sourate Al-Aʿrāf, 7:156',trans:'Ma miséricorde embrasse toute chose. Je la prescrirai à ceux qui Me craignent',highlight:'رَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ',highlightNote:'رَحمَتِي = racine ر-ح-م + schème فَعلَة + ي (mon). وَسِعَت = passé fém. de و-س-ع'},
+waznGrid:[{pattern:'فَعِيل',label:'Qualité intense',example:'رَحِيم',meaning:'très miséricordieux'},{pattern:'فَعَّال',label:'Hyperbole 2',example:'غَفَّار',meaning:'très pardonneur'},{pattern:'فَعُول',label:'Hyperbole 3',example:'صَبُور',meaning:'très patient'},{pattern:'فَعِل',label:'Hyperbole 4',example:'حَذِر',meaning:'très prudent'},{pattern:'مِفعَال',label:'Hyperbole 5',example:'مِعطَاء',meaning:'très généreux'}],
+derivTable:[{forme:'رَحِيم',schème:'فَعِيل',type:'Hyperbole',fr:'très miséricordieux'},{forme:'غَفَّار',schème:'فَعَّال',type:'Hyperbole',fr:'très pardonneur'},{forme:'صَبُور',schème:'فَعُول',type:'Hyperbole',fr:'très patient'},{forme:'شَكُور',schème:'فَعُول',type:'Hyperbole',fr:'très reconnaissant'},{forme:'قَدِير',schème:'فَعِيل',type:'Hyperbole',fr:'tout-puissant'}],
+exercises:[
+{q:'غَفَّار (très pardonneur) suit le schème فَعَّال. Quelle est sa racine ?',ar:'غَفَّار',opts:['غ-ف-ر','غ-ر-ف','ف-غ-ر','ر-غ-ف'],answer:'غ-ف-ر',explain:'غ-ف-ر = pardonner. غَفَّار = schème فَعَّال = hyperbole = "qui pardonne beaucoup"'},
+{q:'Les 5 schèmes d\'اسم المبالغة expriment tous… ?',ar:'',opts:['le lieu de l\'action','la qualité à l\'extrême / de manière intensive','l\'instrument','le passif'],answer:'la qualité à l\'extrême / de manière intensive',explain:'اسم المبالغة = nom d\'hyperbole = qualité portée à son degré maximal'},
+{q:'قَدِير (tout-puissant) et رَحِيم (très miséricordieux) partagent le schème… ?',ar:'قَدِير رَحِيم',opts:['فَعَّال','فَعُول','فَعِيل','مِفعَال'],answer:'فَعِيل',explain:'فَعِيل = schème d\'hyperbole très fréquent dans les noms divins du Coran'}
+]},
+{title:'Les noms dérivés rares : اسم التفضيل',rule:'اسم التفضيل (comparatif/superlatif) suit le schème أَفعَل (m.) / فُعلَى (f.). Il exprime "le plus X" ou "plus X que". Très fréquent dans le Coran pour les attributs divins et les comparaisons morales.',
+rootExample:{root:['ك','ب','ر'],meaning:'grandeur / être grand'},
+quranRef:{type:'quran',text:'اللَّهُ أَكْبَرُ — وَاللَّهُ الْمُتَعَالِ الْكَبِيرُ',ref:'Takbīr (Adhān) & Sourate Ar-Raʿd, 13:9',trans:'Dieu est le plus grand — Dieu est le Très Haut, le Grand',highlight:'أَكْبَرُ الْكَبِيرُ',highlightNote:'أَكبَر = superlatif (أَفعَل) de كَبِير. الكَبِير = adjectif فَعِيل'},
+waznGrid:[{pattern:'أَفعَل (مذكر)',label:'Comparatif/Superlatif m.',example:'أَكبَر',meaning:'le plus grand'},{pattern:'فُعلَى (مؤنث)',label:'Comparatif/Superlatif f.',example:'كُبرَى',meaning:'la plus grande'},{pattern:'أَفعَلِيَّة',label:'Abstrait superlatif',example:'أَولَويَّة',meaning:'priorité'},{pattern:'جَمع أَفاعِل',label:'Pluriel',example:'أَكابِر',meaning:'les plus grands'},{pattern:'فُعلَى جمع فُعَل',label:'Pluriel fém.',example:'كُبَر',meaning:'les plus grandes'}],
+derivTable:[{forme:'أَكبَر',schème:'أَفعَل',type:'Superlatif m.',fr:'le plus grand'},{forme:'كُبرَى',schème:'فُعلَى',type:'Superlatif f.',fr:'la plus grande'},{forme:'أَعظَم',schème:'أَفعَل',type:'Superlatif',fr:'le plus grand/puissant'},{forme:'أَحسَن',schème:'أَفعَل',type:'Superlatif',fr:'le plus beau/bon'},{forme:'حُسنَى',schème:'فُعلَى',type:'Superlatif f.',fr:'la meilleure (ex: الحسنى)'}],
+exercises:[
+{q:'اللَّهُ أَكبَرُ — أَكبَرُ suit le schème أَفعَل qui est le… ?',ar:'اللَّهُ أَكْبَرُ',opts:['participe actif','masdar','comparatif/superlatif','passif'],answer:'comparatif/superlatif',explain:'أَفعَل = اسم التفضيل = "le plus grand". أَكبَر = "plus grand / le plus grand"'},
+{q:'Le féminin du superlatif أَفعَل est… ?',ar:'',opts:['أَفعَلَة','فَعِيلَة','فُعلَى','أَفاعِل'],answer:'فُعلَى',explain:'فُعلَى = superlatif féminin. أَكبَر → كُبرَى ; أَحسَن → حُسنَى (الأسماء الحسنى = les plus beaux noms)'},
+{q:'الأَسمَاءُ الحُسنَى signifie "les plus beaux noms". الحُسنَى suit le schème… ?',ar:'الأَسْمَاءُ الْحُسْنَى',opts:['أَفعَل','فُعلَى','فَعِيل','مَفعُول'],answer:'فُعلَى',explain:'الحُسنَى = فُعلَى, féminin du superlatif أَحسَن. Qualifie الأسماء (noms, pluriel non-humain = accord fém. sing.)'}
+]},
+{title:'Les verbes quadrilitères et les emprunts : الأفعال الرباعية',rule:'Certains verbes arabes ont 4 consonnes de base (رباعي). Ils se conjuguent selon le schème فَعلَلَ (Forme I) et تَفَعلَلَ (Forme II réfléchie). De nombreux termes religieux et scientifiques sont des quadrilitères ou des emprunts arabisés.',
+rootExample:{root:['د','ح','ر','ج'],meaning:'dévaler / précipiter'},
+quranRef:{type:'quran',text:'وَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا',ref:'Sourate Al-Aḥzāb, 33:42',trans:'Et glorifiez-Le matin et soir',highlight:'سَبِّحُوهُ',highlightNote:'سَبَّحَ = Forme II de س-ب-ح. Certains l\'analysent comme quadrilitère sémantique (س-ب-ح dérivé de natation/traversée)'},
+waznGrid:[{pattern:'فَعلَلَ (I quadrilitère)',label:'Base',example:'دَحرَجَ',meaning:'faire rouler'},{pattern:'تَفَعلَلَ (II réfl.)',label:'Réfléchi',example:'تَدَحرَجَ',meaning:'rouler (intransitif)'},{pattern:'فَعلَلَة',label:'Masdar',example:'دَحرَجَة',meaning:'l\'action de faire rouler'},{pattern:'مُفَعلِل',label:'Participe actif',example:'مُدَحرِج',meaning:'celui qui fait rouler'},{pattern:'مُفَعلَل',label:'Participe passif',example:'مُدَحرَج',meaning:'qui est roulé'}],
+derivTable:[{forme:'دَحرَجَ',schème:'فَعلَلَ',type:'Base quadrilit.',fr:'faire rouler'},{forme:'تَدَحرَجَ',schème:'تَفَعلَلَ',type:'Réfléchi',fr:'rouler (soi-même)'},{forme:'دَحرَجَة',schème:'فَعلَلَة',type:'Masdar',fr:'l\'action de rouler'},{forme:'زَلزَلَ',schème:'فَعلَلَ',type:'Base quadrilit.',fr:'faire trembler'},{forme:'زِلزَال',schème:'فِعلَال',type:'Masdar',fr:'tremblement de terre'}],
+exercises:[
+{q:'زَلزَلَ (faire trembler) est un verbe quadrilitère. On le reconnaît car… ?',ar:'زَلزَلَ',opts:['il a 3 consonnes','il a 4 consonnes distinctes','il a un préfixe','il a une lettre double'],answer:'il a 4 consonnes distinctes',explain:'زَلزَلَ = ز-ل-ز-ل : 4 consonnes de base (racine quadrilitère رباعي)'},
+{q:'تَدَحرَجَ est le réfléchi de دَحرَجَ (quadrilitère). Son schème est… ?',ar:'تَدَحرَجَ',opts:['تَفَعَّلَ (V trilitère)','تَفَعلَلَ (réfléchi quadrilitère)','اِفتَعَلَ (VIII)','تَفَاعَلَ (VI)'],answer:'تَفَعلَلَ (réfléchi quadrilitère)',explain:'Verbe quadrilitère réfléchi = تَفَعلَلَ. Analogue à la Forme V pour les trilitères'},
+{q:'زِلزَال (tremblement de terre) suit le schème فِعلَال, masdar du quadrilitère زَلزَلَ. Ce mot apparaît dans… ?',ar:'زِلزَال',opts:['Sourate Al-Fatiha','Sourate Az-Zalzala (99)','Sourate Al-Baqara','Sourate Yāsīn'],answer:'Sourate Az-Zalzala (99)',explain:'Sourate 99 s\'appelle الزَّلزَلَة = "Le Séisme". إِذَا زُلزِلَتِ الأَرضُ زِلزَالَهَا = "Quand la terre sera ébranlée de son ébranlement"'}
+]}
+]};
+
+let cLvl=0,scores=[100,0,0,0,0],unlocked=[true,false,false,false,false];
+let fcIdx=0,knownCards=new Set(),qC=0,qT=0;
+let gTop=0,gExI=0,gSc=0,gTot=0,mTop=0,mExI=0,mSc=0,mTot=0;
+let curSec='alphabet',curAns='';
+
+try{const u=localStorage.getItem('ar5_unl');if(u)unlocked=JSON.parse(u);}catch(e){}
+try{const s=localStorage.getItem('ar5_sc');if(s)scores=JSON.parse(s);}catch(e){}
+function save(){try{localStorage.setItem('ar5_unl',JSON.stringify(unlocked));localStorage.setItem('ar5_sc',JSON.stringify(scores));}catch(e){}}
+
+function renderLevelBar(){
+  document.getElementById('levelBar').innerHTML=LEVELS.map((l,i)=>{
+    const lk=!unlocked[i],ac=i===cLvl;
+    return '<button class="lvl-btn'+(ac?' active':'')+(lk?' locked':'')+'" onclick="'+(lk?'showLockMsg('+i+')':'selectLevel('+i+')')+'" style="'+(ac?'border-color:'+l.color:'')+'">'+(lk?'<span class="lico">🔒</span>':'')+'<span class="li">'+l.icon+'</span><div class="ln" style="'+(ac?'color:'+l.color:'')+'">'+l.name+'</div><div class="ll">'+l.label+'</div>'+(lk&&i>0?'<div class="bn">'+LEVELS[i-1].unlockScore+'%</div>':'')+'</button>';
+  }).join('');
+}
+function renderLevelHeader(){
+  const l=LEVELS[cLvl],p=scores[cLvl]||0;
+  document.getElementById('levelHeader').innerHTML='<div class="lbadge" style="background:'+l.bg+'">'+l.icon+'</div><div class="linfo"><h2>'+l.label+' — '+l.name+'</h2><p>'+l.desc+'</p></div><div class="lprog"><div class="pct">'+p+'%</div><div class="pctlbl">Score quiz</div><div class="pbsm"><div class="pfsm" style="width:'+p+'%;background:'+l.color+'"></div></div></div>';
+}
+function selectLevel(i){
+  if(!unlocked[i])return;
+  cLvl=i;fcIdx=0;knownCards.clear();qC=0;qT=0;gTop=0;gExI=0;gSc=0;gTot=0;mTop=0;mExI=0;mSc=0;mTot=0;
+  renderLevelBar();renderLevelHeader();showSection(curSec,null);
+}
+function showLockMsg(i){showToast('🔒 Obtenez '+LEVELS[i-1].unlockScore+'% au quiz du niveau '+i+' (actuel : '+(scores[i-1]||0)+'%)');}
+function showSection(id,btn){
+  curSec=id;
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  if(btn){document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
+  if(!unlocked[cLvl]){
+    var prev=cLvl-1,nd=LEVELS[prev]?LEVELS[prev].unlockScore||80:80,cu=scores[prev]||0;
+    document.getElementById(id).innerHTML='<div class="lockoverlay"><div style="font-size:38px;margin-bottom:.65rem">🔒</div><h3 style="font-size:14px;font-weight:500;margin-bottom:4px">Niveau verrouillé</h3><p style="font-size:12px;color:#666">Obtenez '+nd+'% au quiz du Niveau '+cLvl+'.<br>Score actuel : <strong>'+cu+'%</strong></p></div>';
+    return;
+  }
+  if(id==='alphabet')renderAlphabet();
+  else if(id==='vocab'){fcIdx=0;knownCards.clear();renderVocab();}
+  else if(id==='grammar'){gTop=0;gExI=0;gSc=0;gTot=0;renderGrammar();}
+  else if(id==='morpho'){mTop=0;mExI=0;mSc=0;mTot=0;renderMorpho();}
+  else if(id==='quiz'){qC=0;qT=0;renderQuiz();}
+}
+
+function renderAlphabet(){
+  var el=document.getElementById('alphabet'),lt=LEVELS[cLvl].alphabet;
+  el.innerHTML='<div class="agrid">'+lt.map(function(l,i){return '<div class="lcard" onclick="showLetter('+i+')"><div class="lar">'+l.ar+'</div><div class="lnm">'+l.name+'</div><div class="lnm" style="color:#7F77DD">'+l.trans+'</div></div>';}).join('')+'</div><div id="lDet"></div>';
+}
+function showLetter(i){
+  var l=LEVELS[cLvl].alphabet[i];
+  document.querySelectorAll('.lcard').forEach(function(c,j){c.classList.toggle('sel',j===i);});
+  document.getElementById('lDet').innerHTML='<div class="ldet"><div style="display:flex;align-items:center;gap:.85rem;flex-wrap:wrap"><div style="font-size:54px;direction:rtl;color:#534AB7;line-height:1">'+l.ar+'</div><div><div style="font-size:14px;font-weight:500">'+l.name+'</div><div style="font-size:12px;color:#666">Translittération : <strong>'+l.trans+'</strong></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">'+l.forms.map(function(f){return '<div class="fbadge">'+f+'</div>';}).join('')+'</div></div></div></div>';
+}
+
+function renderVocab(){
+  var el=document.getElementById('vocab'),v=LEVELS[cLvl].vocab;
+  el.innerHTML='<div class="pb"><div class="pf" id="pf" style="width:0%"></div></div><p style="font-size:11px;color:#999;text-align:center;margin-bottom:.65rem" id="fcc">Carte 1/'+v.length+'</p><div class="fcwrap" onclick="flipCard()"><div class="fc" id="fc"><div class="cface cfront"><div class="cword" id="cw"></div><div class="chint">Cliquez pour la traduction</div></div><div class="cface cback"><div class="ctrans" id="ct"></div></div></div></div><div class="fcc"><button class="bunknown" onclick="rateCard(false)">✗ À revoir</button><button onclick="flipCard()">↩ Retourner</button><button class="bknown" onclick="rateCard(true)">✓ Connu</button></div>';
+  updateFC();
+}
+function updateFC(){
+  var v=LEVELS[cLvl].vocab,it=v[fcIdx];
+  document.getElementById('cw').textContent=it.ar;
+  document.getElementById('ct').textContent=it.fr;
+  document.getElementById('fc').classList.remove('flipped');
+  document.getElementById('fcc').textContent='Carte '+(fcIdx+1)+'/'+v.length+' — Maîtrisées : '+knownCards.size;
+  document.getElementById('pf').style.width=(knownCards.size/v.length*100)+'%';
+}
+function flipCard(){document.getElementById('fc').classList.toggle('flipped');}
+function rateCard(k){if(k)knownCards.add(fcIdx);fcIdx=(fcIdx+1)%LEVELS[cLvl].vocab.length;updateFC();}
+
+function buildQuranBox(ref){
+  if(!ref)return'';
+  var badge=ref.type==='quran'?'📖 Quran':'🕌 Hadith';
+  var cls=ref.type==='quran'?'':'hadith';
+  var textHtml=ref.text;
+  if(ref.highlight){
+    ref.highlight.split(' ').forEach(function(w){
+      if(w)textHtml=textHtml.split(w).join('<span class="highlight">'+w+'</span>');
+    });
+  }
+  return '<div class="quran-box"><span class="qb-badge '+cls+'">'+badge+'</span><div class="qb-text">'+textHtml+'</div><div class="qb-ref">'+ref.ref+'</div><div class="qb-trans">'+ref.trans+'</div>'+(ref.highlightNote?'<div style="font-size:11px;color:#534AB7;margin-top:.4rem;border-top:1px solid #eee;padding-top:.35rem">ℹ️ '+ref.highlightNote+'</div>':'')+'</div>';
+}
+
+function renderGrammar(){
+  var el=document.getElementById('grammar'),topics=LEVELS[cLvl].grammar;
+  if(!topics||!topics.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:#999">Aucun contenu.</div>';return;}
+  var t=topics[gTop];
+  var tabs=topics.map(function(tp,i){return '<button class="mtab'+(i===gTop?' active':'')+'" onclick="selGTop('+i+')">'+tp.title.substring(0,25)+'</button>';}).join('');
+  var exHtml=buildGEx(t,t.exercises[gExI]);
+  el.innerHTML=
+    '<div class="mod-tabs">'+tabs+'</div>'+
+    '<div class="lesson-box"><h3>'+t.title+'</h3>'+
+    '<div class="rule-box">'+t.rule+'</div>'+
+    t.examples.map(function(e){return '<div class="ex-row"><div class="ex-ar">'+e.ar+'</div><div class="ex-tr">'+e.trans+'</div><div class="ex-fr">'+e.fr+'</div></div>';}).join('')+
+    '</div>'+
+    buildQuranBox(t.quranRef)+
+    '<div class="gscore-row"><span style="font-size:12px;color:#666">Exercices :</span><span class="gsbadge gram" id="gsbg">'+gSc+'/'+gTot+' — Q.'+(gExI+1)+'/'+t.exercises.length+'</span></div>'+
+    '<div id="gExArea">'+exHtml+'</div>';
+}
+function buildGEx(t,ex){
+  if(!ex)return'<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : '+gSc+'/'+gTot+' <button class="next-btn" onclick="resetG()">Recommencer</button></div>';
+  var arLine=ex.ar?'<span class="ar">'+ex.ar+'</span>':'';
+  var opts=ex.opts.map(function(o){
+    var safe=o.replace(/\\/g,'\\\\').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    return '<button class="g-opt" onclick="checkG(this,\''+safe+'\')">'+o+'</button>';
+  }).join('');
+  return '<div class="g-ex"><h4>Question '+(gExI+1)+'/'+t.exercises.length+'</h4><div class="g-q">'+ex.q+arLine+'</div><div class="g-opts">'+opts+'</div><div class="g-fb" id="gfb"></div></div>';
+}
+function selGTop(i){gTop=i;gExI=0;gSc=0;gTot=0;renderGrammar();}
+function resetG(){gExI=0;gSc=0;gTot=0;renderGrammar();}
+function checkG(btn,ans){
+  var t=LEVELS[cLvl].grammar[gTop],ex=t.exercises[gExI];
+  document.querySelectorAll('#grammar .g-opt').forEach(function(b){b.disabled=true;});
+  gTot++;
+  if(ans===ex.answer){btn.classList.add('correct');gSc++;document.getElementById('gfb').innerHTML='<span style="color:#3B6D11">✓ '+ex.explain+'</span>';}
+  else{btn.classList.add('wrong');document.querySelectorAll('#grammar .g-opt').forEach(function(b){if(b.textContent===ex.answer)b.classList.add('correct');});document.getElementById('gfb').innerHTML='<span style="color:#A32D2D">✗ '+ex.explain+'</span>';}
+  document.getElementById('gsbg').textContent=gSc+'/'+gTot+' — Q.'+(gExI+1)+'/'+t.exercises.length;
+  setTimeout(function(){
+    gExI++;
+    if(gExI>=t.exercises.length){document.getElementById('gExArea').innerHTML='<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : '+gSc+'/'+gTot+' <button class="next-btn" onclick="resetG()">Recommencer</button></div>';return;}
+    renderGrammar();
+  },1600);
+}
+
+function renderMorpho(){
+  var el=document.getElementById('morpho'),topics=LEVELS[cLvl].morpho;
+  if(!topics||!topics.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:#999">Aucun contenu.</div>';return;}
+  var t=topics[mTop];var root=t.rootExample;
+  var tabs=topics.map(function(tp,i){return '<button class="mtab'+(i===mTop?' active morpho':'')+'" onclick="selMTop('+i+')">'+tp.title.substring(0,28)+'</button>';}).join('');
+  var rootHtml='<div class="root-display"><div style="font-size:12px;color:#666;margin-bottom:6px">Racine — '+root.meaning+'</div><div class="root-letters">'+root.root.map(function(l,i){return '<div class="root-letter"><div class="rl-ar">'+l+'</div><div class="rl-num">'+['ف','ع','ل'][i]+'</div></div>';}).join('')+'</div></div>';
+  var waznHtml='<div style="font-size:12px;font-weight:500;color:#993C1D;margin-bottom:6px">Schèmes (أوزان) :</div><div class="wazn-grid">'+t.waznGrid.map(function(w,i){return '<div class="wazn-card" onclick="selectWazn('+i+')"><div class="wpattern">'+w.pattern+'</div><div class="wlabel">'+w.label+'</div><div class="wexample">'+w.example+' — <span style="font-size:12px;color:#666">'+w.meaning+'</span></div></div>';}).join('')+'</div>';
+  var derivHtml='<div style="font-size:12px;font-weight:500;color:#993C1D;margin:10px 0 6px">Tableau de dérivation :</div><table class="deriv-table"><thead><tr><th>Forme arabe</th><th>Schème (وزن)</th><th>Type</th><th>Traduction</th></tr></thead><tbody>'+t.derivTable.map(function(r){return '<tr><td class="ar-cell">'+r.forme+'</td><td class="ar-cell" style="font-size:14px;color:#993C1D">'+r.schème+'</td><td style="font-size:12px">'+r.type+'</td><td style="font-size:12px;color:#666">'+r.fr+'</td></tr>';}).join('')+'</tbody></table>';
+  var exHtml=buildMEx(t,t.exercises[mExI]);
+  el.innerHTML=
+    '<div class="mod-tabs">'+tabs+'</div>'+
+    '<div class="lesson-box"><h3>'+t.title+'</h3><div class="rule-box morpho-rule">'+t.rule+'</div>'+rootHtml+waznHtml+derivHtml+'</div>'+
+    buildQuranBox(t.quranRef)+
+    '<div class="gscore-row"><span style="font-size:12px;color:#666">Exercices morphologie :</span><span class="gsbadge morph" id="msbg">'+mSc+'/'+mTot+' — Q.'+(mExI+1)+'/'+t.exercises.length+'</span></div>'+
+    '<div id="mExArea">'+exHtml+'</div>';
+}
+function buildMEx(t,ex){
+  if(!ex)return'<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : '+mSc+'/'+mTot+' <button class="next-btn" onclick="resetM()">Recommencer</button></div>';
+  var arLine=ex.ar?'<span class="ar">'+ex.ar+'</span>':'';
+  var opts=ex.opts.map(function(o){
+    var safe=o.replace(/\\/g,'\\\\').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    return '<button class="g-opt" onclick="checkM(this,\''+safe+'\')">'+o+'</button>';
+  }).join('');
+  return '<div class="g-ex"><h4>Question morphologie '+(mExI+1)+'/'+t.exercises.length+'</h4><div class="g-q">'+ex.q+arLine+'</div><div class="g-opts">'+opts+'</div><div class="g-fb" id="mfb"></div></div>';
+}
+function selMTop(i){mTop=i;mExI=0;mSc=0;mTot=0;renderMorpho();}
+function resetM(){mExI=0;mSc=0;mTot=0;renderMorpho();}
+function selectWazn(i){document.querySelectorAll('.wazn-card').forEach(function(c,j){c.classList.toggle('wsel',j===i);});}
+function checkM(btn,ans){
+  var t=LEVELS[cLvl].morpho[mTop],ex=t.exercises[mExI];
+  document.querySelectorAll('#morpho .g-opt').forEach(function(b){b.disabled=true;});
+  mTot++;
+  if(ans===ex.answer){btn.classList.add('correct');mSc++;document.getElementById('mfb').innerHTML='<span style="color:#3B6D11">✓ '+ex.explain+'</span>';}
+  else{btn.classList.add('wrong');document.querySelectorAll('#morpho .g-opt').forEach(function(b){if(b.textContent===ex.answer)b.classList.add('correct');});document.getElementById('mfb').innerHTML='<span style="color:#A32D2D">✗ '+ex.explain+'</span>';}
+  document.getElementById('msbg').textContent=mSc+'/'+mTot+' — Q.'+(mExI+1)+'/'+t.exercises.length;
+  setTimeout(function(){
+    mExI++;
+    if(mExI>=t.exercises.length){document.getElementById('mExArea').innerHTML='<div style="text-align:center;padding:1.25rem;color:#1D9E75;font-size:13px">✓ Score : '+mSc+'/'+mTot+' <button class="next-btn" onclick="resetM()">Recommencer</button></div>';return;}
+    renderMorpho();
+  },1600);
+}
+
+function renderQuiz(){
+  var el=document.getElementById('quiz');
+  el.innerHTML='<div class="qscore"><div class="qsi"><span class="qsn" id="qsC">0</span>Correct</div><div class="qsi"><span class="qsn" id="qsT">0</span>Total</div><div class="qsi"><span class="qsn" id="qsP">—</span>Score</div><div class="qsi"><span class="qsn">'+(LEVELS[cLvl].unlockScore||'—')+'%</span>Seuil</div></div><div class="qcard"><div class="qq" id="qQ" style="direction:rtl;font-size:21px"></div><div class="qopts" id="qO"></div></div><p style="text-align:center;font-size:12px;color:#666;margin-top:.35rem" id="qFB"></p>';
+  nextQ();
+}
+function nextQ(){
+  var v=LEVELS[cLvl].vocab,i=Math.floor(Math.random()*v.length),c=v[i];
+  curAns=c.fr;
+  var q=document.getElementById('qQ');if(q)q.textContent=c.ar;
+  var pool=v.filter(function(_,j){return j!==i;}).sort(function(){return Math.random()-.5;}).slice(0,3).map(function(x){return x.fr;});
+  var opts=[c.fr].concat(pool).sort(function(){return Math.random()-.5;});
+  var o=document.getElementById('qO');
+  if(o)o.innerHTML=opts.map(function(op){return '<button class="qopt" onclick="checkQ(this,\''+op.replace(/'/g,'&#39;')+'\')">'+op+'</button>';}).join('');
+  var f=document.getElementById('qFB');if(f)f.textContent='';
+}
+function checkQ(btn,ans){
+  document.querySelectorAll('.qopt').forEach(function(b){b.disabled=true;});qT++;
+  if(ans===curAns){btn.classList.add('correct');qC++;document.getElementById('qFB').textContent='✓ Bravo !';}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt').forEach(function(b){if(b.textContent===curAns)b.classList.add('correct');});document.getElementById('qFB').textContent='✗ Réponse : '+curAns;}
+  var p=Math.round(qC/qT*100);
+  document.getElementById('qsC').textContent=qC;document.getElementById('qsT').textContent=qT;document.getElementById('qsP').textContent=p+'%';
+  scores[cLvl]=p;save();renderLevelHeader();
+  var nd=LEVELS[cLvl].unlockScore,nx=cLvl+1;
+  if(nd&&p>=nd&&nx<LEVELS.length&&!unlocked[nx]&&qT>=5){unlocked[nx]=true;save();setTimeout(function(){showToast('🎉 Niveau '+LEVELS[nx].name+' débloqué !');},200);setTimeout(renderLevelBar,300);}
+  setTimeout(nextQ,1400);
+}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3200);}
+
+renderLevelBar();renderLevelHeader();renderAlphabet();
+
+</script>
+</body>
+</html>
